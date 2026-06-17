@@ -10,7 +10,8 @@ import { localLangFor } from '../data/phrases'
 import { useUI } from '../content'
 import { listApplications } from '../lib/applications'
 import { getDestinations } from '../lib/shop'
-import { areaPhoto } from '../lib/images'
+import { areaPhoto, guidePhoto } from '../lib/images'
+import GuideThumb from '../components/GuideThumb'
 import { lottePerksFor } from '../data/lottePerks'
 import { inboundHighlights } from '../data/regionGuides'
 import { highlightDesc, highlightTitle, lottePerkDesc, lottePerkTitle } from '../lib/localize'
@@ -72,35 +73,38 @@ export default function Travel() {
     <div>
       <PageHeader title={UI.travel.title} subtitle={UI.travel.subtitle} />
       <Container className="browse-body">
-        {/* Selected destination banner + picker */}
-        <div className="travel-banner">
-          {photo && <img className="travel-banner__bg" src={photo} alt="" aria-hidden />}
-          <span className="travel-banner__scrim" aria-hidden />
-          <div className="travel-banner__content">
-            <span className={cn('travel-banner__active', !isActive && 'is-preview')}>
-              {isActive ? <MapPin size={14} /> : <Eye size={14} />}
-              {isActive ? UI.travel.active : UI.travel.preview}
-            </span>
-            <span className="travel-banner__place">
-              <span aria-hidden>{place.flag}</span> {place.name}
-            </span>
-            <button
-              type="button"
-              className="travel-banner__change"
-              onClick={() => setSheetOpen(true)}
-            >
-              {UI.travel.pickPlace}
-              <ChevronDown size={16} />
-            </button>
+        {/* Destination banner + live usage — two columns on desktop when active */}
+        <div className={cn('travel-top', isActive && latest && 'travel-top--split')}>
+          {/* Selected destination banner + picker */}
+          <div className="travel-banner">
+            {photo && <img className="travel-banner__bg" src={photo} alt="" aria-hidden />}
+            <span className="travel-banner__scrim" aria-hidden />
+            <div className="travel-banner__content">
+              <span className={cn('travel-banner__active', !isActive && 'is-preview')}>
+                {isActive ? <MapPin size={14} /> : <Eye size={14} />}
+                {isActive ? UI.travel.active : UI.travel.preview}
+              </span>
+              <span className="travel-banner__place">
+                <span aria-hidden>{place.flag}</span> {place.name}
+              </span>
+              <button
+                type="button"
+                className="travel-banner__change"
+                onClick={() => setSheetOpen(true)}
+              >
+                {UI.travel.pickPlace}
+                <ChevronDown size={16} />
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* Live data usage — only for the destination you're actually roaming in */}
-        {isActive && latest && (
-          <div className="travel-usage">
-            <UsageCard application={latest} />
-          </div>
-        )}
+          {/* Live data usage — only for the destination you're actually roaming in */}
+          {isActive && latest && (
+            <div className="travel-usage">
+              <UsageCard application={latest} />
+            </div>
+          )}
+        </div>
 
         {/* Section tabs — split the long page into focused views */}
         <div className="travel-tabs" role="tablist" aria-label={UI.travel.title}>
@@ -171,9 +175,7 @@ export default function Travel() {
             <div className="guide-grid">
               {highlights.map(({ code: hc, highlight: h }) => (
                 <div key={`${hc}-${h.id}`} className="guide-card">
-                  <span className="guide-card__emoji" aria-hidden>
-                    {h.emoji}
-                  </span>
+                  <GuideThumb photo={guidePhoto(h.id)} emoji={h.emoji} />
                   <div className="guide-card__body">
                     <span className="guide-card__cat">{UI.direction.guideCategories[h.category]}</span>
                     <div className="guide-card__title">{highlightTitle(hc, h)}</div>

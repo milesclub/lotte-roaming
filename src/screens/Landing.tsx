@@ -8,9 +8,10 @@ import Carousel from '../components/Carousel'
 import CardStack from '../components/CardStack'
 import PlanBuilder from '../components/PlanBuilder'
 import TripReminder from '../components/TripReminder'
+import GuideThumb from '../components/GuideThumb'
 import HeroSlideshow from '../components/HeroSlideshow'
 import Stars from '../components/ui/Stars'
-import { heroSlidesFor } from '../lib/images'
+import { heroSlidesFor, guidePhoto } from '../lib/images'
 import { useUI } from '../content'
 import { useApplication } from '../store/application'
 import { useReviews } from '../store/reviews'
@@ -122,9 +123,7 @@ export default function Landing() {
           <div className="guide-grid stagger">
             {koreaPicks.map(({ code, highlight: h }) => (
               <div key={`${code}-${h.id}`} className="guide-card">
-                <span className="guide-card__emoji" aria-hidden>
-                  {h.emoji}
-                </span>
+                <GuideThumb photo={guidePhoto(h.id)} emoji={h.emoji} />
                 <div className="guide-card__body">
                   <span className="guide-card__cat">{UI.direction.guideCategories[h.category]}</span>
                   <div className="guide-card__title">{highlightTitle(code, h)}</div>

@@ -12,7 +12,7 @@ import {
   dataIdFor,
   dataOption,
   getDestinations,
-  getProductsFor,
+  productFor,
   VALIDITY_OPTIONS,
   VOLUME_GB_OPTIONS,
 } from '../lib/shop'
@@ -21,13 +21,6 @@ import { planPriceText } from '../lib/labels'
 import { useApplication } from '../store/application'
 import { cn } from '../lib/cn'
 import type { ProductKind } from '../lib/domain'
-
-// Pick the primary product of a kind for the chosen destination.
-function pickProduct(direction: 'inbound' | 'outbound', code: string | null, kind: ProductKind) {
-  if (direction === 'outbound' && !code) return undefined
-  const list = getProductsFor(direction, code).filter((p) => p.kind === kind)
-  return list.find((p) => p.recommended) ?? list[0]
-}
 
 // Step-by-step plan configurator on the landing: destination → plan type →
 // days/data → estimated price → opens the product detail to apply.
@@ -48,7 +41,8 @@ export default function PlanBuilder() {
   const [sheetOpen, setSheetOpen] = useState(false)
 
   const code = direction === 'inbound' ? 'KR' : destinationCode
-  const product = pickProduct(direction, code, kind)
+  // One product per country; the daily/volume toggle is just local state.
+  const product = direction === 'outbound' && !code ? undefined : productFor(direction, code)
 
   // Inbound is Korea-only, so the destination step is skipped — steps start at
   // the plan type and renumber accordingly.
@@ -56,16 +50,14 @@ export default function PlanBuilder() {
   const typeNum = showDest ? 2 : 1
   const amountNum = showDest ? 3 : 2
 
-  // Reset the amount to the product's defaults when the product changes.
+  // Reset both daily + volume amounts to the product's defaults when the country
+  // (product) changes; switching plan type keeps the chosen amounts.
   useEffect(() => {
     if (!product) return
-    if (product.kind === 'daily') {
-      setDays(product.defaultDays ?? 3)
-      setDataId(dataIdFor(product.dailyGb, false))
-    } else {
-      setValidity(product.validityDays ?? 30)
-      setVolGb(product.totalGb ?? 30)
-    }
+    setDays(product.defaultDays)
+    setDataId(dataIdFor(product.dailyGb, false))
+    setValidity(product.validityDays)
+    setVolGb(product.totalGb)
   }, [product?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const countries = getDestinations()

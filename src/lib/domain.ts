@@ -54,16 +54,22 @@ export interface Destination {
 
 export type ProductKind = 'daily' | 'volume' | 'unlimited'
 
+// One product per country/region; it supports BOTH daily and volume plans — the
+// plan type is chosen on the product (builder/detail), not split into separate
+// products. Prices are unit prices: dailyKRW (per day, 2GB tier) / volumeKRW
+// (per GB). The chosen PlanConfig decides the total (see labels.planPrice).
 export interface Product {
   id: string
-  kind: ProductKind
   name: string
   tagline: string
-  // Data spec — only values present in the brief are used; price stays null.
-  dailyGb?: number
-  defaultDays?: number
-  totalGb?: number
-  validityDays?: number
+  // Daily plan defaults + per-day unit price.
+  dailyGb: number
+  defaultDays: number
+  dailyKRW: number
+  // Volume plan defaults + per-GB unit price.
+  totalGb: number
+  validityDays: number
+  volumeKRW: number
   throttleNote?: string
   simTypes: SimType[]
   networks: Network[]
@@ -75,7 +81,6 @@ export interface Product {
   noticeIds: string[]
   badge?: string
   recommended?: boolean
-  priceKRW: number | null // null → "요금 안내 예정"
 }
 
 export interface Benefit {

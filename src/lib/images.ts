@@ -57,6 +57,43 @@ export const AREA_PHOTOS: Record<string, string> = {
   GU: U('1533050487297-09b450131914'),
 }
 
+// Per-highlight photos for the recommendation guide cards (real landmark / mood
+// photography, verified to resolve). Keyed by AreaHighlight.id. Swap for licensed
+// LOTTE property/logo assets later — keys stay the same.
+const G = (id: string) => U(id, 240, 70)
+export const GUIDE_PHOTOS: Record<string, string> = {
+  // Seoul
+  'sel-stay': G('1538485399081-7191377e8241'), // SIGNIEL / Lotte World Tower — Seoul skyline
+  'sel-tour': G('1517154421773-0529f29ea451'), // SEOUL SKY · Lotte World — Han River night
+  'sel-shopping': G('1535139262971-c51845709a48'), // Lotte Dept. Myeongdong — shopping street
+  // Busan
+  'pus-stay': G('1599561046251-bfb9465b4c44'),
+  'pus-shopping': G('1599561046251-bfb9465b4c44'),
+  'pus-tour': G('1599561046251-bfb9465b4c44'),
+  // Jeju
+  'cju-stay': G('1635776062043-223faf322554'),
+  'cju-dutyfree': G('1601972599720-36938d4ecd31'),
+  'cju-tour': G('1635776062043-223faf322554'),
+  // Incheon
+  'icn-pickup': G('1538669715315-155098f0fb1d'),
+  'icn-stay': G('1538669715315-155098f0fb1d'),
+  // Gyeonggi / Gangwon / Gyeongju
+  'gyg-shopping': G('1505993597083-3bd19fb75e57'),
+  'gyg-tour': G('1505993597083-3bd19fb75e57'),
+  'gwo-stay': G('1611348586804-61bf6c080437'),
+  'gwo-tour': G('1611348586804-61bf6c080437'),
+  'gyb-tour': G('1583833008338-31a6657917ab'),
+  'gyb-stay': G('1583833008338-31a6657917ab'),
+  // Nationwide
+  'etc-lpoint': G('1548115184-bc6544d06a58'),
+  'etc-stay': G('1538485399081-7191377e8241'),
+  'etc-dutyfree': G('1601972599720-36938d4ecd31'), // Lotte Duty Free — luxury shopping
+}
+
+export function guidePhoto(id?: string | null): string | undefined {
+  return id ? GUIDE_PHOTOS[id] : undefined
+}
+
 // Region fallback for any destination without a dedicated photo.
 export const REGION_PHOTOS: Record<string, string> = {
   korea: AREA_PHOTOS['KR-ETC'],

@@ -118,6 +118,16 @@ export function getProduct(id: string | null | undefined): Product | undefined {
   return PRODUCTS.find((p) => p.id === id)
 }
 
+// The single product for a destination (daily + volume both live on it). Prefers
+// a region-specific product over the worldwide one.
+export function productFor(
+  direction: TravelDirection,
+  destinationCode: string | null | undefined,
+): Product | undefined {
+  const list = getProductsFor(direction, destinationCode)
+  return list.find((p) => p.coverage !== 'global') ?? list[0]
+}
+
 export function benefitsFor(product: Product): Benefit[] {
   return product.benefitIds.map((id) => BENEFITS[id]).filter(Boolean)
 }
@@ -126,13 +136,11 @@ export function noticesFor(product: Product): Notice[] {
   return product.noticeIds.map((id) => NOTICES[id]).filter(Boolean)
 }
 
-// Seeds sensible default options when a product is selected.
+// Seeds sensible default options when a product is selected (daily by default;
+// the builder/detail toggle switches to a volume plan in place).
 export function defaultOptionsFor(product: Product): ProductOptions {
   const simType = product.simTypes[0]
-  const plan: PlanConfig =
-    product.kind === 'volume'
-      ? { type: 'volume', totalGb: product.totalGb, validityDays: product.validityDays }
-      : { type: 'daily', gbPerDay: product.dailyGb, days: product.defaultDays }
+  const plan: PlanConfig = { type: 'daily', gbPerDay: product.dailyGb, days: product.defaultDays }
   return {
     simType,
     plan,

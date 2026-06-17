@@ -1,28 +1,34 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
-import { Info } from 'lucide-react'
+import { Info, ChevronLeft } from 'lucide-react'
 import Container from '../components/site/Container'
 import Button from '../components/Button'
 import Segmented from '../components/Segmented'
 import Stepper from '../components/Stepper'
 import DataTierSelect from '../components/DataTierSelect'
 import ChipSelect from '../components/ChipSelect'
-import Badge from '../components/ui/Badge'
 import BenefitIcon from '../components/ui/BenefitIcon'
+import HeroSlideshow from '../components/HeroSlideshow'
+import { heroSlidesFor } from '../lib/images'
 import { useUI } from '../content'
 import {
   benefitsFor,
   dataIdFor,
   dataOption,
+  getDestination,
+  getDestinations,
   getProduct,
   noticesFor,
   VALIDITY_OPTIONS,
   VOLUME_GB_OPTIONS,
 } from '../lib/shop'
 import { dailyDataText, planPriceText } from '../lib/labels'
-import { benefitDesc, benefitTitle, noticeText, productName, productTagline } from '../lib/localize'
+import { benefitDesc, benefitTitle, noticeText } from '../lib/localize'
+import type { Product } from '../lib/domain'
 import { useApplication } from '../store/application'
 import { useAuth } from '../store/auth'
+import type { ProductKind } from '../lib/domain'
 
 export default function ProductDetail() {
   const UI = useUI()
@@ -31,6 +37,8 @@ export default function ProductDetail() {
   const product = getProduct(productId)
   const selectProduct = useApplication((s) => s.selectProduct)
   const options = useApplication((s) => s.options)
+  const direction = useApplication((s) => s.direction)
+  const destinationCode = useApplication((s) => s.destinationCode)
   const setSimType = useApplication((s) => s.setSimType)
   const setNetwork = useApplication((s) => s.setNetwork)
   const setPlan = useApplication((s) => s.setPlan)
@@ -44,6 +52,28 @@ export default function ProductDetail() {
   if (!product) return <Navigate to="/" replace />
   if (!options) return null
 
+  // Country-centric: the page is one destination; daily/volume is just a toggle
+  // that swaps to the sibling product of the other kind for the same country.
+  // Resolve the country to show (prefer the chosen destination, else derive it
+  // from the product's coverage so the flag is always right — even on top-up).
+  const { place, code } = resolvePlace(product, direction, destinationCode, UI.browse.koreaName, UI.product.coverageGlobal)
+  // Landmark slideshow behind the country header — region's representative spots.
+  const region =
+    direction === 'inbound'
+      ? 'korea'
+      : getDestination(code)?.regionId ??
+        (product.coverage !== 'global' ? product.coverage[0] : undefined)
+  const slides = heroSlidesFor(direction, region)
+  // Daily/volume is a plan-type toggle on the same product (no navigation).
+  const switchKind = (kind: ProductKind) => {
+    if (kind === options.plan.type) return
+    if (kind === 'volume') {
+      setPlan({ type: 'volume', totalGb: product.totalGb, validityDays: product.validityDays })
+    } else {
+      setPlan({ type: 'daily', gbPerDay: product.dailyGb, days: product.defaultDays })
+    }
+  }
+
   // Purchase needs login: go straight to details if signed in, else sign in first.
   const apply = () => navigate(user ? '/apply/info' : '/signin?next=/apply/info')
   const benefits = benefitsFor(product)
@@ -52,6 +82,22 @@ export default function ProductDetail() {
 
   const optionsPanel = (
     <div className="options-card">
+      <div className="field-block">
+        <div className="field-block__label">{UI.builder.step2}</div>
+        <Segmented
+          ariaLabel={UI.builder.step2}
+          options={[
+            { value: 'daily', label: UI.builder.daily },
+            { value: 'volume', label: UI.builder.volume },
+          ]}
+          value={options.plan.type}
+          onChange={(v) => switchKind(v as ProductKind)}
+        />
+        <p className="opt-desc">
+          {options.plan.type === 'volume' ? UI.builder.volumeDesc : UI.builder.dailyDesc}
+        </p>
+      </div>
+
       <div className="field-block">
         <div className="field-block__label">{UI.product.sim}</div>
         <Segmented
@@ -75,7 +121,7 @@ export default function ProductDetail() {
         </div>
       )}
 
-      {product.kind === 'daily' ? (
+      {options.plan.type === 'daily' ? (
         <>
           <div className="field-block">
             <div className="field-block__label">{UI.product.perDay}</div>
@@ -162,31 +208,41 @@ export default function ProductDetail() {
     <div className="pd">
       <Container className="pd__pad">
         <button type="button" onClick={() => navigate(-1)} className="pd__back">
-          ‹ {UI.cta.back}
+          <ChevronLeft size={18} strokeWidth={2.4} />
+          {UI.cta.back}
         </button>
 
         <div className="pd__grid">
-          {/* Left: info */}
+          {/* Left: info — country-forward header */}
           <div>
-            {product.badge && (
-              <Badge tone={product.recommended ? 'brand' : 'neutral'}>{product.badge}</Badge>
-            )}
-            <h1 className="pd__title">{productName(product)}</h1>
-            <p className="pd__tagline">{productTagline(product)}</p>
+            <div className="pd__country">
+              <HeroSlideshow className="pd__country-bg" images={slides} />
+              <span className="pd__country-scrim" aria-hidden />
+              <div className="pd__country-content">
+                <span className="pd__country-tag">{UI.brand.name}</span>
+                <h1 className="pd__title">
+                  <span className="pd__flag" aria-hidden>
+                    {place.emoji}
+                  </span>
+                  {place.name}
+                </h1>
+              </div>
+            </div>
+            {/* <p className="pd__tagline">{productTagline(product)}</p> */}
 
             <div className="spec-row">
               <Spec
-                label={product.kind === 'daily' ? UI.product.perDay : UI.product.total}
+                label={options.plan.type === 'daily' ? UI.product.perDay : UI.product.total}
                 value={
-                  product.kind === 'daily'
+                  options.plan.type === 'daily'
                     ? dailyDataText(options.plan)
                     : `${options.plan.totalGb ?? product.totalGb}GB`
                 }
               />
               <Spec
-                label={product.kind === 'daily' ? UI.product.days : UI.product.validity}
+                label={options.plan.type === 'daily' ? UI.product.days : UI.product.validity}
                 value={UI.product.daysUnit(
-                  product.kind === 'daily' ? days : options.plan.validityDays ?? 0,
+                  options.plan.type === 'daily' ? days : options.plan.validityDays ?? 0,
                 )}
               />
               <Spec label={UI.product.sim} value={product.simTypes.map((s) => UI.sim[s]).join(' · ')} />
@@ -225,18 +281,25 @@ export default function ProductDetail() {
         </div>
       </Container>
 
-      {/* Mobile sticky apply bar */}
-      <div className="pd__mobilebar">
-        <div className="pd__mobilebar-inner">
-          <div style={{ flex: 1 }}>
-            <div className="pd__mobilebar-name">{productName(product)}</div>
-            <div className="pd__mobilebar-price">{planPriceText(product, options.plan)}</div>
+      {/* Mobile sticky apply bar — portaled to <body> so position:fixed resolves
+          against the viewport (the route-fade animation transforms an ancestor,
+          which would otherwise become its containing block). */}
+      {createPortal(
+        <div className="pd__mobilebar">
+          <div className="pd__mobilebar-inner">
+            <div style={{ flex: 1 }}>
+              <div className="pd__mobilebar-name">
+                <span aria-hidden>{place.emoji}</span> {place.name}
+              </div>
+              <div className="pd__mobilebar-price">{planPriceText(product, options.plan)}</div>
+            </div>
+            <Button className="btn--lg" onClick={apply}>
+              {UI.cta.apply}
+            </Button>
           </div>
-          <Button className="btn--lg" onClick={apply}>
-            {UI.cta.apply}
-          </Button>
-        </div>
-      </div>
+        </div>,
+        document.body,
+      )}
     </div>
   )
 }
@@ -248,4 +311,36 @@ function Spec({ label, value }: { label: string; value: string }) {
       <div className="spec-row__value">{value}</div>
     </div>
   )
+}
+
+// The country to feature for a product: the chosen destination when the product
+// actually covers it, otherwise a representative country from the product's
+// coverage (so the flag is always correct). Returns the matching code too, used
+// to find the daily/volume sibling.
+function resolvePlace(
+  product: Product,
+  direction: 'inbound' | 'outbound',
+  destinationCode: string | null,
+  koreaName: string,
+  worldName: string,
+): { place: { emoji: string; name: string }; code: string | null } {
+  if (direction === 'inbound' || product.directions[0] === 'inbound') {
+    return { place: { emoji: '🇰🇷', name: koreaName }, code: 'KR' }
+  }
+  const covers = (regionId: string) =>
+    product.coverage === 'global' || product.coverage.includes(regionId as never)
+
+  const chosen = getDestination(destinationCode)
+  if (chosen && covers(chosen.regionId)) {
+    return { place: { emoji: chosen.flag, name: chosen.name }, code: chosen.code }
+  }
+  if (product.coverage === 'global') {
+    return { place: { emoji: '🌐', name: worldName }, code: null }
+  }
+  const rep =
+    getDestinations().find((d) => covers(d.regionId) && d.popular) ??
+    getDestinations().find((d) => covers(d.regionId))
+  return rep
+    ? { place: { emoji: rep.flag, name: rep.name }, code: rep.code }
+    : { place: { emoji: '🌐', name: worldName }, code: null }
 }

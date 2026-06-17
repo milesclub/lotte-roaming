@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { UserRound, ChevronLeft } from 'lucide-react'
 import Logo from '../Logo'
+import wordmark from '../../assets/wordmark.svg'
 import Container from './Container'
 import LangSwitch from './LangSwitch'
 import { useUI } from '../../content'
@@ -61,10 +62,9 @@ export default function SiteHeader() {
             </button>
           )}
 
-          <Link to="/" className="brand">
-            <Logo size={30} />
-            <span className="brand__name">{UI.brand.name}</span>
-            {/* <span className="brand__tag">{UI.brand.affiliate}</span> */}
+          <Link to="/" className="brand" aria-label={UI.brand.name}>
+            <Logo size={28} />
+            <img className="brand__wordmark" src={wordmark} alt={UI.brand.name} />
           </Link>
 
           <nav className="nav">

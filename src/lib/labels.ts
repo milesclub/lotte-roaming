@@ -42,31 +42,22 @@ export function priceText(priceKRW: number | null): string {
   return priceKRW == null ? '₩—' : `₩${priceKRW.toLocaleString()}`
 }
 
-// product.priceKRW is a unit price: per day (daily) or per GB (volume).
-// The total depends on the chosen plan (days × per-day, or GB × per-GB).
-export function planPrice(product: Pick<Product, 'priceKRW'>, plan: PlanConfig): number | null {
-  if (product.priceKRW == null) return null
+// Unit prices live on the product: dailyKRW (per day, 2GB tier) / volumeKRW
+// (per GB). The total depends on the chosen plan (days × per-day, GB × per-GB).
+type PriceFields = Pick<Product, 'dailyKRW' | 'volumeKRW'>
+
+export function planPrice(product: PriceFields, plan: PlanConfig): number | null {
   if (plan.type === 'daily') {
     // per-day price scales with the data tier; total = per-day × days
-    const perDay = Math.round((product.priceKRW * dailyTierFactor(plan)) / 100) * 100
+    const perDay = Math.round((product.dailyKRW * dailyTierFactor(plan)) / 100) * 100
     return perDay * (plan.days ?? 0)
   }
   // Volume: per-GB pool price; a shorter validity (15d) costs less than 30d.
-  const base = product.priceKRW * (plan.totalGb ?? 0)
+  const base = product.volumeKRW * (plan.totalGb ?? 0)
   const factor = plan.validityDays === 15 ? 0.85 : 1
   return Math.round((base * factor) / 100) * 100
 }
 
-export function planPriceText(product: Pick<Product, 'priceKRW'>, plan: PlanConfig): string {
+export function planPriceText(product: PriceFields, plan: PlanConfig): string {
   return priceText(planPrice(product, plan))
-}
-
-// Representative price for a product card (no plan chosen yet): per-day for
-// Daily, package total for Volume.
-export function cardPriceText(product: Product): string {
-  if (product.priceKRW == null) return '₩—'
-  if (product.kind === 'daily') {
-    return `${priceText(product.priceKRW)} / ${getUI().product.perDayShort}`
-  }
-  return priceText(product.priceKRW * (product.totalGb ?? 0))
 }

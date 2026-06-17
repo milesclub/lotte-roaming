@@ -20,10 +20,11 @@
   --subtle: #6a6f77;               /* fg-neutral-muted (gray-600) */
   --faint: #9da1a7;                /* fg-neutral-muted-weak (gray-400) */
 
-  --hairline: #dee1e4;             /* gray-100 — default border */
+  --hairline: #e4eaef;             /* gray-100 — default border */
   --line: #e7eaec;                 /* lighter border */
 
   --bg: #ffffff;
+  --surface: #ffffff;             /* card / sheet surface */
   --bg-soft: #f0f3f5;              /* bg-neutral-weak (gray-50) */
   --bg-soft-2: #e7ebee;           /* deeper track / behind controls */
 

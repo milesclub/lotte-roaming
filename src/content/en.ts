@@ -391,24 +391,8 @@ const en = {
 
   // Localizable catalog content (overrides the English text in src/data/*).
   catalog: {
-    products: {
-      'korea-daily-5gb': {
-        name: 'Korea Daily',
-        tagline: 'Fresh data every day in Korea. Great for short trips.',
-      },
-      'korea-volume-50gb': {
-        name: 'Korea Volume',
-        tagline: 'One data pool for your whole stay in Korea.',
-      },
-      'korea-esim-daily': {
-        name: 'Korea eSIM Daily',
-        tagline: 'SKT local-network priority. Fast from the moment you land.',
-      },
-      'korea-usim-volume': {
-        name: 'Korea USIM',
-        tagline: 'Physical USIM for Korea — airport pickup or delivery.',
-      },
-    } as Record<string, { name: string; tagline: string }>,
+    // English names/taglines live on the product data; locales override by id.
+    products: {} as Record<string, { name: string; tagline: string }>,
     benefits: {
       point: {
         title: 'L.POINT rewards',
