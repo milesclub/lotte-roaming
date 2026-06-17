@@ -1,0 +1,180 @@
+/* Pretendard — multilingual-safe sans (Latin + CJK). Falls back to system. */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+
+/* ============================================================
+   DESIGN TOKENS — single source of truth.
+   Swap --brand-primary (and its derivatives) for the real
+   LOTTE / L.POINT brand values to re-theme the whole app.
+   ============================================================ */
+:root {
+  /* ── L.POINT design tokens (cnt.lpoint.com) ──────────────────────────────
+     Brand red = red-600 #fb1822, cool-gray neutral scale, Pretendard.        */
+  --brand-primary: #fb1822;        /* color-bg-brand-solid (red-600) */
+  --brand-primary-tint: #fff0f1;   /* color-bg-brand-weak (red-50) */
+  --brand-primary-wash: #fff5f5;   /* very soft red surface (notices) */
+  --brand-primary-ring: #ffc1c4;   /* red-200 — brand hairline */
+  --brand-pressed: #d3020b;        /* red-700 — pressed/strong text on tint */
+
+  --ink: #222832;                  /* fg-neutral-solid (gray-950) */
+  --muted: #5f646c;                /* fg-neutral-subtle (gray-700) */
+  --subtle: #6a6f77;               /* fg-neutral-muted (gray-600) */
+  --faint: #9da1a7;                /* fg-neutral-muted-weak (gray-400) */
+
+  --hairline: #dee1e4;             /* gray-100 — default border */
+  --line: #e7eaec;                 /* lighter border */
+
+  --bg: #ffffff;
+  --bg-soft: #f0f3f5;              /* bg-neutral-weak (gray-50) */
+  --bg-soft-2: #e7ebee;           /* deeper track / behind controls */
+
+  --success: #10c177;              /* fg-semantic-success (green-500) */
+  --surface-dark: #222832;         /* bg-neutral-solid (gray-950) */
+
+  /* Radii (L.POINT: chips 8 / controls 12 / cards 16) */
+  --r-chip: 8px;
+  --r-control: 12px;
+  --r-card: 16px;
+  --r-sheet: 22px;
+
+  /* Near-solid brand fill (L.POINT uses flat solids) with a hint of depth. */
+  --grad-brand: linear-gradient(180deg, #fb1822 0%, #ee0a14 100%);
+  --grad-ink: linear-gradient(165deg, #2b313b 0%, #222832 100%);
+  /* Flat look — drop shadows disabled; separation comes from hairline rings and
+     the soft-gray canvas. (No-op value stays valid inside box-shadow lists.) */
+  --shadow-soft: 0 0 0 0 transparent;
+  --shadow-float: 0 0 0 0 transparent;
+  --shadow-brand: 0 0 0 0 transparent;
+
+  /* L.POINT signature special-banner gradient (warm cream → lilac, white fade). */
+  --grad-special: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 80%),
+    linear-gradient(90deg, #fff7ef 0%, #f5e5f7 100%);
+
+  /* L.POINT "special" highlight gradient (violet → pink → red) — for premium
+     / recommended card borders. */
+  --grad-special-border: linear-gradient(114deg, #c75bdc 0%, #ff4769 50%, #fb1822 100%);
+
+  /* L.POINT type scale (size · weight · line-height). letter-spacing -0.005em. */
+  --fs-heading-1: 2rem;        /* 32 */
+  --fs-heading-2: 1.75rem;     /* 28 */
+  --fs-heading-3: 1.5rem;      /* 24 */
+  --fs-heading-4: 1.25rem;     /* 20 */
+  --fs-body-2: 1rem;           /* 16 */
+  --fs-title-1: 1.125rem;      /* 18 */
+  --fs-title-2: 1rem;          /* 16 */
+  --fs-title-3: 0.875rem;      /* 14 */
+  --fs-body-3: 0.875rem;       /* 14 */
+  --fs-caption-1: 0.875rem;    /* 14 */
+  --fs-caption-2: 0.8125rem;   /* 13 */
+  --fs-caption-3: 0.75rem;     /* 12 */
+  --lh-tight: 1.4;
+  --lh-body: 1.5;
+
+  /* L.POINT exact font stack (Pretendard) + CJK fallbacks for zh/ja. */
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Noto Sans JP',
+    'Noto Sans SC', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Code', monospace;
+}
+
+/* ============================================================
+   Reset (replaces Tailwind preflight)
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #e6eaec;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.45;
+  letter-spacing: -0.005em; /* L.POINT body letter-spacing */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+dl,
+dd {
+  margin: 0;
+}
+h1,
+h2,
+h3 {
+  letter-spacing: -0.01em; /* L.POINT heading letter-spacing */
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg {
+  display: block;
+}
+img {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button {
+  background: none;
+  border: 0;
+}
+
+/* Hairline-thin scrollbars to match the design medium */
+*::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #cfcfd4;
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

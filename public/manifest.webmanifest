@@ -1,0 +1,19 @@
+{
+  "name": "LOTTE ROAMING",
+  "short_name": "LOTTE ROAMING",
+  "description": "Prepaid travel eSIM & USIM for Korea and abroad — activate in minutes, no contract.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#fb1822",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

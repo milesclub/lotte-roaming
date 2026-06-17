@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body { margin: 0; -webkit-font-smoothing: antialiased; }
+  *::-webkit-scrollbar { height: 9px; width: 9px; }
+  *::-webkit-scrollbar-thumb { background: #cfcfd4; border-radius: 999px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#ECECEE;font-family:'Helvetica Neue',Helvetica,-apple-system,'Segoe UI',Arial,sans-serif;color:#1A1A1A;padding-bottom:80px">
+
+  <!-- BOARD HEADER -->
+  <header style="position:sticky;top:0;z-index:30;background:rgba(236,236,238,0.86);backdrop-filter:blur(10px);border-bottom:1px solid #dadade;padding:14px 26px 0">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:30px;height:30px;border-radius:8px;background:#E4002B;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px">L</div>
+        <div>
+          <div style="font-size:16px;font-weight:800;letter-spacing:-0.01em">LOTTE ROAMING</div>
+          <div style="font-size:11px;color:#71717a;font-weight:600;letter-spacing:0.02em">Roaming data for Korea · eSIM &amp; USIM · MVP wireframes</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:700;color:#71717a;background:#fff;border:1px solid #dadade;border-radius:999px;padding:5px 11px">MID-FI · GRAYSCALE + RED ACCENT</div>
+        <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:700;color:#E4002B;background:#fff;border:1px solid #f3c6cf;border-radius:999px;padding:5px 11px">BRAND COLOR = TOKEN (swap later)</div>
+      </div>
+    </div>
+    <!-- SCREEN TABS -->
+    <nav style="display:flex;gap:4px;overflow-x:auto;margin-top:12px;padding-bottom:2px">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="11">
+        <button style="{{ t.btnStyle }}" onClick="{{ t.onClick }}">{{ t.label }}</button>
+      </sc-for>
+    </nav>
+  </header>
+
+  <main style="padding:30px 26px 0">
+
+    <!-- ============ FLOW OVERVIEW ============ -->
+    <sc-if value="{{ isFlow }}" hint-placeholder-val="{{ true }}">
+    <section style="max-width:1080px;margin:0 auto">
+      <div style="margin-bottom:6px;font-size:22px;font-weight:800;letter-spacing:-0.01em">One purchase flow — discover to lifecycle</div>
+      <div style="font-size:14px;color:#52525b;max-width:680px;line-height:1.5;margin-bottom:24px">A single linear journey. Two branches shape everything downstream: <b>SIM type</b> (eSIM vs USIM) changes how you receive it, and <b>plan type</b> (Daily vs Volume) changes how data is metered. Tap any tab to open a screen.</div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <sc-for list="{{ flowNodes }}" as="n" hint-placeholder-count="10">
+          <div style="flex:1 1 195px;min-width:185px;background:#fff;border:1px solid #e2e2e6;border-radius:14px;padding:14px 15px">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px">
+              <div style="width:30px;height:24px;border-radius:7px;background:#1A1A1A;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;padding:0 4px">{{ n.id }}</div>
+              <div style="font-size:13px;font-weight:800;letter-spacing:-0.01em">{{ n.title }}</div>
+            </div>
+            <div style="font-size:12px;color:#71717a;line-height:1.45">{{ n.desc }}</div>
+            <div style="margin-top:9px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:9px;font-weight:700;color:{{ n.tagColor }}">{{ n.tag }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+        <div style="display:flex;align-items:flex-start;gap:9px;background:#fff;border:1px solid #e2e2e6;border-left:3px solid #E4002B;border-radius:11px;padding:12px 14px;flex:1 1 320px"><div style="font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:800;color:#E4002B;flex:0 0 auto;margin-top:1px">BRANCH</div><div style="font-size:12px;color:#3f3f46;line-height:1.45"><b>S2 SIM type → S6 receive.</b> eSIM ends in an instant QR (install now / email). USIM routes to airport-counter pickup or courier delivery.</div></div>
+        <div style="display:flex;align-items:flex-start;gap:9px;background:#fff;border:1px solid #e2e2e6;border-left:3px solid #E4002B;border-radius:11px;padding:12px 14px;flex:1 1 320px"><div style="font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:800;color:#E4002B;flex:0 0 auto;margin-top:1px">BRANCH</div><div style="font-size:12px;color:#3f3f46;line-height:1.45"><b>S3 plan type → metering.</b> Daily refills a per-day bucket (low-speed after the cap). Volume is one pool you draw down at any pace.</div></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e2e2e6;border-radius:10px;padding:9px 13px;font-size:12px;color:#3f3f46;font-weight:600"><div style="width:13px;height:13px;border:1.6px solid #71717a;border-radius:50%"></div>Globe language pill (EN / 中文 / 日本語) on every screen</div>
+        <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e2e2e6;border-radius:10px;padding:9px 13px;font-size:12px;color:#3f3f46;font-weight:600"><div style="font-family:ui-monospace,Menlo,monospace;font-weight:800;color:#52525b">1–5</div>Funnel uses one 5-step indicator: SIM · Plan · Network · Account · Pay</div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S1 DISCOVER (4 variations) ============ -->
+    <sc-if value="{{ isS1 }}" hint-placeholder-val="{{ true }}">
+    <section>
+      <div style="max-width:1080px;margin:0 auto 22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S1 · Discover / Home<span style="font-size:13px;font-weight:700;color:#E4002B;margin-left:12px;font-family:ui-monospace,Menlo,monospace">4 DIRECTIONS</span></div>
+        <div style="font-size:14px;color:#52525b;max-width:680px;line-height:1.5;margin-top:5px">Make it instantly read as "Korea travel data" and pull into the flow — while leading with the companion promise. Each direction trades off how loud the companion layer is vs. the buy CTA.</div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:30px;justify-content:center">
+
+        <!-- A · Hero-first -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">A · HERO-FIRST</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">Image-led splash, single strong CTA, companion as a teaser strip.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="position:relative;height:330px;flex:0 0 auto;background:repeating-linear-gradient(45deg,#e6e6e9,#e6e6e9 9px,#f1f1f3 9px,#f1f1f3 18px);display:flex;align-items:flex-end">
+                <div style="position:absolute;top:14px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 16px;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46;background:#fff"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+                <div style="position:absolute;top:150px;left:0;right:0;text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#a0a0a5">photo · 명동 street, dusk</div>
+                <div style="position:relative;width:100%;padding:18px 18px 16px;background:linear-gradient(transparent,rgba(0,0,0,0.55))">
+                  <div style="color:#fff;font-size:24px;font-weight:800;line-height:1.12;letter-spacing:-0.02em">Your Korea,<br>connected.</div>
+                </div>
+              </div>
+              <div style="padding:16px 18px 6px;flex:1;display:flex;flex-direction:column">
+                <div style="font-size:13px;color:#52525b;line-height:1.45">Travel data for Korea — activate in minutes, no contract.</div>
+                <div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px;margin-top:14px">Get connected</div>
+                <div style="text-align:center;font-size:12px;color:#71717a;font-weight:600;margin-top:11px;text-decoration:underline">Going elsewhere? Global plans</div>
+                <div style="display:flex;gap:7px;margin-top:16px">
+                  <div style="flex:1;border:1px solid #ededf0;border-radius:10px;padding:9px 7px;text-align:center;font-size:9.5px;font-weight:700;color:#52525b">Arrival guide</div>
+                  <div style="flex:1;border:1px solid #ededf0;border-radius:10px;padding:9px 7px;text-align:center;font-size:9.5px;font-weight:700;color:#52525b">Welcome perk</div>
+                  <div style="flex:1;border:1px solid #ededf0;border-radius:10px;padding:9px 7px;text-align:center;font-size:9.5px;font-weight:700;color:#52525b">Near-you tips</div>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #efefef">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- B · Companion-forward (recommended) -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">B · COMPANION-FORWARD <span style="background:#E4002B;color:#fff;border-radius:5px;padding:1px 6px;margin-left:4px">PICK</span></div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">Leads with "your arrival kit." Buying feels like unlocking the companion.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="padding:14px 18px 0">
+                <div style="font-size:22px;font-weight:800;line-height:1.12;letter-spacing:-0.02em">Your Korea starts the moment you land.</div>
+                <div style="font-size:12px;color:#71717a;margin-top:7px;line-height:1.4">Travel data + a travel companion in one tap.</div>
+              </div>
+              <div style="padding:14px 18px 0;flex:1;display:flex;flex-direction:column;gap:9px;overflow:hidden">
+                <div style="display:flex;gap:11px;align-items:center;background:#FAFAFA;border:1px solid #eee;border-radius:13px;padding:12px">
+                  <div style="width:38px;height:38px;border-radius:9px;background:repeating-linear-gradient(45deg,#e6e6e9,#e6e6e9 6px,#f2f2f4 6px,#f2f2f4 12px);flex:0 0 auto"></div>
+                  <div><div style="font-size:13px;font-weight:800">Arrival guide</div><div style="font-size:11px;color:#71717a;margin-top:1px">Airport SIM-free, transit, first night</div></div>
+                </div>
+                <div style="display:flex;gap:11px;align-items:center;background:#FAFAFA;border:1px solid #eee;border-radius:13px;padding:12px">
+                  <div style="width:38px;height:38px;border-radius:9px;background:#FBE3E8;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#E4002B;font-weight:800;font-size:12px">%</div>
+                  <div><div style="font-size:13px;font-weight:800">Welcome perk</div><div style="font-size:11px;color:#71717a;margin-top:1px">Duty-free + dining offers on arrival</div></div>
+                </div>
+                <div style="display:flex;gap:11px;align-items:center;background:#FAFAFA;border:1px solid #eee;border-radius:13px;padding:12px">
+                  <div style="width:38px;height:38px;border-radius:9px;background:repeating-linear-gradient(45deg,#e6e6e9,#e6e6e9 6px,#f2f2f4 6px,#f2f2f4 12px);flex:0 0 auto"></div>
+                  <div><div style="font-size:13px;font-weight:800">Near you</div><div style="font-size:11px;color:#71717a;margin-top:1px">Tips that follow your route</div></div>
+                </div>
+              </div>
+              <div style="padding:0 18px 12px">
+                <div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Get connected</div>
+                <div style="text-align:center;font-size:11px;color:#71717a;font-weight:600;margin-top:9px;text-decoration:underline">Going elsewhere? Global plans</div>
+              </div>
+              <div style="display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #efefef">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- C · Immersive split -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">C · IMMERSIVE SPLIT</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">Full-bleed hero with overlaid CTA, swipeable perk cards below.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="position:relative;height:392px;flex:0 0 auto;background:repeating-linear-gradient(45deg,#dededf,#dededf 9px,#ececee 9px,#ececee 18px);display:flex;flex-direction:column;justify-content:space-between">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46;background:rgba(255,255,255,0.85)"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+                <div style="text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#9a9a9f;margin-top:-90px">photo · 한강 night skyline</div>
+                <div style="padding:18px;background:linear-gradient(transparent,rgba(0,0,0,0.6))">
+                  <div style="color:#fff;font-size:23px;font-weight:800;line-height:1.12;letter-spacing:-0.02em">Your Korea, connected.</div>
+                  <div style="color:#e9e9e9;font-size:12px;margin-top:6px">Activate in minutes. No contract.</div>
+                  <div style="background:#E4002B;color:#fff;text-align:center;padding:13px;border-radius:12px;font-weight:800;font-size:14px;margin-top:13px">Get connected</div>
+                </div>
+              </div>
+              <div style="padding:14px 0 6px 18px;flex:1">
+                <div style="font-size:11px;font-weight:800;color:#52525b;text-transform:uppercase;letter-spacing:0.04em">Why travelers pick us</div>
+                <div style="display:flex;gap:10px;overflow:hidden;margin-top:10px">
+                  <div style="flex:0 0 130px;border:1px solid #eee;border-radius:12px;padding:11px"><div style="width:26px;height:26px;border-radius:7px;background:#FBE3E8"></div><div style="font-size:12px;font-weight:800;margin-top:8px">Welcome perk</div><div style="font-size:10px;color:#71717a;margin-top:2px">On arrival</div></div>
+                  <div style="flex:0 0 130px;border:1px solid #eee;border-radius:12px;padding:11px"><div style="width:26px;height:26px;border-radius:7px;background:#ededf0"></div><div style="font-size:12px;font-weight:800;margin-top:8px">Near you</div><div style="font-size:10px;color:#71717a;margin-top:2px">Route-aware tips</div></div>
+                  <div style="flex:0 0 70px;border:1px dashed #d4d4d8;border-radius:12px"></div>
+                </div>
+                <div style="text-align:center;font-size:11px;color:#71717a;font-weight:600;margin-top:14px;margin-right:18px;text-decoration:underline">Going elsewhere? Global plans</div>
+              </div>
+              <div style="display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #efefef">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- D · Utility-minimal -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">D · UTILITY-MINIMAL</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">Fastest path to buy. Trust row up top, companion as one quiet line.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="padding:30px 20px 0;flex:1;display:flex;flex-direction:column">
+                <div style="width:40px;height:40px;border-radius:11px;background:#E4002B;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px">L</div>
+                <div style="font-size:26px;font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-top:22px">Korea data,<br>in minutes.</div>
+                <div style="font-size:13px;color:#71717a;line-height:1.45;margin-top:10px">Prepaid eSIM or USIM. No contract. Welcome perks included.</div>
+                <div style="display:flex;gap:6px;margin-top:18px;font-size:10px;font-weight:700;color:#52525b">
+                  <div style="border:1px solid #ededf0;border-radius:8px;padding:6px 9px">Instant QR</div>
+                  <div style="border:1px solid #ededf0;border-radius:8px;padding:6px 9px">5G ready</div>
+                  <div style="border:1px solid #ededf0;border-radius:8px;padding:6px 9px">Lotte trusted</div>
+                </div>
+              </div>
+              <div style="padding:0 20px 14px">
+                <div style="background:#E4002B;color:#fff;text-align:center;padding:15px;border-radius:13px;font-weight:800;font-size:15px">Get connected</div>
+                <div style="text-align:center;font-size:11px;color:#71717a;font-weight:600;margin-top:10px">Going elsewhere? <span style="text-decoration:underline">Global plans</span></div>
+              </div>
+              <div style="display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #efefef">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S2 · SIM TYPE ============ -->
+    <sc-if value="{{ isS2 }}" hint-placeholder-val="{{ true }}">
+    <section style="max-width:760px;margin:0 auto">
+      <div style="margin-bottom:22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S2 · Choose SIM type <span style="font-size:13px;font-weight:700;color:#E4002B;margin-left:8px;font-family:ui-monospace,Menlo,monospace">STEP 1 / 5</span></div>
+        <div style="font-size:14px;color:#52525b;line-height:1.5;margin-top:5px">eSIM installs instantly; USIM is a physical card you pick up or have delivered. This choice drives the receive step at S6.</div>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+          <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 16px 0"><div style="font-size:18px;color:#52525b">‹</div><div style="font-size:16px;font-weight:800">Choose SIM type</div></div>
+            <div style="display:flex;gap:5px;padding:12px 18px 4px"><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div></div>
+            <div style="font-size:10px;color:#a1a1aa;font-weight:700;padding:0 18px">Step 1 of 5 · SIM</div>
+            <div style="padding:14px 18px 0;flex:1;display:flex;flex-direction:column;gap:12px">
+              <div style="border:2px solid #E4002B;border-radius:16px;padding:15px;position:relative;box-shadow:0 6px 16px rgba(228,0,43,0.10)">
+                <div style="position:absolute;top:-9px;right:14px;background:#E4002B;color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:6px">INSTANT</div>
+                <div style="display:flex;gap:13px;align-items:flex-start">
+                  <div style="width:46px;height:46px;border-radius:11px;background:repeating-conic-gradient(#1A1A1A 0deg 8deg,#fff 8deg 16deg);border:1px solid #e2e2e6;flex:0 0 auto"></div>
+                  <div style="flex:1"><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:800">eSIM</div><div style="width:20px;height:20px;border-radius:50%;border:6px solid #E4002B"></div></div><div style="font-size:11.5px;color:#71717a;line-height:1.4;margin-top:4px">Install instantly with a QR code. No physical SIM. iPhone XS or newer &amp; most Android.</div></div>
+                </div>
+              </div>
+              <div style="border:1px solid #e2e2e6;border-radius:16px;padding:15px">
+                <div style="display:flex;gap:13px;align-items:flex-start">
+                  <div style="width:46px;height:46px;border-radius:11px;background:#FAFAFA;border:1px solid #e2e2e6;flex:0 0 auto;display:flex;align-items:center;justify-content:center"><div style="width:24px;height:30px;border-radius:4px;border:1.6px solid #b4b4bb;background:#fff"></div></div>
+                  <div style="flex:1"><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:800">USIM</div><div style="width:20px;height:20px;border-radius:50%;border:1.6px solid #c4c4cc"></div></div><div style="font-size:11.5px;color:#71717a;line-height:1.4;margin-top:4px">A physical SIM card. Pick up at the airport counter or get it delivered to your hotel.</div></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:7px;align-items:center;background:#FAFAFA;border:1px solid #eee;border-radius:10px;padding:10px;font-size:10.5px;color:#71717a;line-height:1.35"><div style="width:13px;height:13px;border:1.4px solid #71717a;border-radius:50%;flex:0 0 auto"></div>Not sure if your phone supports eSIM? Check compatibility</div>
+            </div>
+            <div style="padding:0 18px 16px"><div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Continue</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S3 · PLAN (type + daily + volume) ============ -->
+    <sc-if value="{{ isS3 }}" hint-placeholder-val="{{ true }}">
+    <section>
+      <div style="max-width:1080px;margin:0 auto 22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S3 · Choose plan<span style="font-size:13px;font-weight:700;color:#E4002B;margin-left:12px;font-family:ui-monospace,Menlo,monospace">STEP 2 / 5 · SELECT → DAILY / VOLUME</span></div>
+        <div style="font-size:14px;color:#52525b;max-width:720px;line-height:1.5;margin-top:5px">Pick how data is metered, then configure the size. Daily refills every day (low-speed unlimited after the cap); Volume is one bucket for the whole trip. Replaces the old fixed-SKU plan list.</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:30px;justify-content:center">
+
+        <!-- select -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#52525b;margin-bottom:12px">SELECT TYPE</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px 0"><div style="font-size:18px;color:#52525b">‹</div><div style="font-size:16px;font-weight:800">Plan type</div></div>
+              <div style="display:flex;gap:5px;padding:12px 18px 4px"><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div></div>
+              <div style="font-size:10px;color:#a1a1aa;font-weight:700;padding:0 18px">Step 2 of 5 · Plan</div>
+              <div style="padding:14px 18px 0;flex:1;display:flex;flex-direction:column;gap:12px">
+                <div style="border:2px solid #E4002B;border-radius:16px;padding:15px;box-shadow:0 6px 16px rgba(228,0,43,0.10)">
+                  <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:800">Daily</div><div style="width:20px;height:20px;border-radius:50%;border:6px solid #E4002B"></div></div>
+                  <div style="font-size:11.5px;color:#71717a;line-height:1.4;margin-top:5px">Fresh data every day. Unlimited low-speed once you hit the daily cap.</div>
+                  <div style="margin-top:9px;font-size:11px;font-weight:800;color:#1A1A1A;background:#FBE3E8;display:inline-block;padding:5px 9px;border-radius:7px">e.g. 5GB / day · 3 days</div>
+                </div>
+                <div style="border:1px solid #e2e2e6;border-radius:16px;padding:15px">
+                  <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:800">Volume <span style="font-size:11px;color:#a1a1aa;font-weight:700">종량제</span></div><div style="width:20px;height:20px;border-radius:50%;border:1.6px solid #c4c4cc"></div></div>
+                  <div style="font-size:11.5px;color:#71717a;line-height:1.4;margin-top:5px">One bucket for the whole trip. Use it at any pace, top up anytime.</div>
+                  <div style="margin-top:9px;font-size:11px;font-weight:800;color:#52525b;background:#F4F4F5;display:inline-block;padding:5px 9px;border-radius:7px">e.g. 50GB total · 30 days</div>
+                </div>
+              </div>
+              <div style="padding:0 18px 16px"><div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Continue</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- daily detail -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B;margin-bottom:12px">DAILY — CONFIGURE</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px 0"><div style="font-size:18px;color:#52525b">‹</div><div style="font-size:16px;font-weight:800">Daily plan</div></div>
+              <div style="padding:14px 18px 0;flex:1;overflow:hidden">
+                <div style="font-size:11px;font-weight:800;color:#52525b">Data per day</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #e2e2e6;border-radius:12px;padding:10px 14px;margin-top:7px"><div style="width:32px;height:32px;border-radius:9px;border:1.5px solid #c4c4cc;display:flex;align-items:center;justify-content:center;font-size:18px;color:#71717a">−</div><div style="font-size:20px;font-weight:800">5 GB</div><div style="width:32px;height:32px;border-radius:9px;background:#1A1A1A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px">+</div></div>
+                <div style="font-size:11px;font-weight:800;color:#52525b;margin-top:14px">Number of days</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #e2e2e6;border-radius:12px;padding:10px 14px;margin-top:7px"><div style="width:32px;height:32px;border-radius:9px;border:1.5px solid #c4c4cc;display:flex;align-items:center;justify-content:center;font-size:18px;color:#71717a">−</div><div style="font-size:20px;font-weight:800">3 days</div><div style="width:32px;height:32px;border-radius:9px;background:#1A1A1A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px">+</div></div>
+                <div style="margin-top:16px;background:#FAFAFA;border:1px solid #eee;border-radius:13px;padding:13px">
+                  <div style="font-size:14px;font-weight:800">5GB / day × 3 days</div>
+                  <div style="display:flex;flex-direction:column;gap:7px;margin-top:10px">
+                    <div style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:#3f3f46;line-height:1.35"><div style="width:15px;height:15px;border-radius:50%;background:#E4002B;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px">✓</div>Unlimited low-speed (1 Mbps) after the daily 5GB</div>
+                    <div style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:#3f3f46;line-height:1.35"><div style="width:15px;height:15px;border-radius:50%;background:#E4002B;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px">✓</div>Resets daily at 00:00 KST</div>
+                    <div style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:#3f3f46;line-height:1.35"><div style="width:15px;height:15px;border-radius:50%;background:#E4002B;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px">✓</div>5G where available</div>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:0 18px 16px;border-top:1px solid #efefef;padding-top:12px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><div style="font-size:13px;color:#71717a;font-weight:700">Total</div><div style="font-size:20px;font-weight:800">₩—</div></div>
+                <div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Continue to network</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- volume detail -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B;margin-bottom:12px">VOLUME — CONFIGURE</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px 0"><div style="font-size:18px;color:#52525b">‹</div><div style="font-size:16px;font-weight:800">Volume plan</div></div>
+              <div style="padding:14px 18px 0;flex:1;overflow:hidden">
+                <div style="font-size:11px;font-weight:800;color:#52525b">Total data</div>
+                <div style="display:flex;gap:7px;margin-top:7px">
+                  <div style="flex:1;text-align:center;border:1px solid #e2e2e6;border-radius:10px;padding:10px 0;font-size:13px;font-weight:800;color:#71717a">25GB</div>
+                  <div style="flex:1;text-align:center;border:2px solid #E4002B;border-radius:10px;padding:9px 0;font-size:13px;font-weight:800">50GB</div>
+                  <div style="flex:1;text-align:center;border:1px solid #e2e2e6;border-radius:10px;padding:10px 0;font-size:13px;font-weight:800;color:#71717a">100GB</div>
+                </div>
+                <div style="font-size:11px;font-weight:800;color:#52525b;margin-top:14px">Validity</div>
+                <div style="display:flex;gap:7px;margin-top:7px">
+                  <div style="flex:1;text-align:center;border:1px solid #e2e2e6;border-radius:10px;padding:10px 0;font-size:13px;font-weight:800;color:#71717a">15 days</div>
+                  <div style="flex:1;text-align:center;border:2px solid #E4002B;border-radius:10px;padding:9px 0;font-size:13px;font-weight:800">30 days</div>
+                </div>
+                <div style="margin-top:16px;background:#FAFAFA;border:1px solid #eee;border-radius:13px;padding:13px">
+                  <div style="font-size:14px;font-weight:800">50GB total · 30 days</div>
+                  <div style="height:6px;border-radius:3px;background:#e6e6e9;margin-top:9px"><div style="height:6px;width:14%;border-radius:3px;background:#E4002B"></div></div>
+                  <div style="font-size:10px;color:#a1a1aa;margin-top:5px">Use at any pace within 30 days</div>
+                  <div style="display:flex;flex-direction:column;gap:7px;margin-top:10px">
+                    <div style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:#3f3f46;line-height:1.35"><div style="width:15px;height:15px;border-radius:50%;background:#E4002B;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px">✓</div>No daily limit — one shared pool</div>
+                    <div style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:#3f3f46;line-height:1.35"><div style="width:15px;height:15px;border-radius:50%;background:#E4002B;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px">✓</div>Top up more data anytime</div>
+                    <div style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:#3f3f46;line-height:1.35"><div style="width:15px;height:15px;border-radius:50%;background:#E4002B;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px">✓</div>5G where available</div>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:0 18px 16px;border-top:1px solid #efefef;padding-top:12px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><div style="font-size:13px;color:#71717a;font-weight:700">Total</div><div style="font-size:20px;font-weight:800">₩—</div></div>
+                <div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Continue to network</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S4 · NETWORK ============ -->
+    <sc-if value="{{ isS4 }}" hint-placeholder-val="{{ true }}">
+    <section style="max-width:760px;margin:0 auto">
+      <div style="margin-bottom:22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S4 · Choose network <span style="font-size:13px;font-weight:700;color:#E4002B;margin-left:8px;font-family:ui-monospace,Menlo,monospace">STEP 3 / 5</span></div>
+        <div style="font-size:14px;color:#52525b;line-height:1.5;margin-top:5px">Roaming connects through partner carriers (works the instant you land); SKT local connects directly to Korea's network for the fastest speeds.</div>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+          <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 16px 0"><div style="font-size:18px;color:#52525b">‹</div><div style="font-size:16px;font-weight:800">Choose network</div></div>
+            <div style="display:flex;gap:5px;padding:12px 18px 4px"><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div></div>
+            <div style="font-size:10px;color:#a1a1aa;font-weight:700;padding:0 18px">Step 3 of 5 · Network</div>
+            <div style="padding:14px 18px 0;flex:1;display:flex;flex-direction:column;gap:12px">
+              <div style="border:2px solid #E4002B;border-radius:16px;padding:15px;box-shadow:0 6px 16px rgba(228,0,43,0.10)">
+                <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:15px;font-weight:800">Roaming network</div><div style="width:20px;height:20px;border-radius:50%;border:6px solid #E4002B"></div></div>
+                <div style="font-size:11.5px;color:#71717a;line-height:1.4;margin-top:4px">Connects through partner carriers. Works the moment you land.</div>
+                <div style="display:flex;gap:6px;margin-top:11px">
+                  <div style="flex:1;background:#FAFAFA;border-radius:8px;padding:8px"><div style="font-size:8.5px;color:#a1a1aa;font-weight:700">COVERAGE</div><div style="font-size:11px;font-weight:800;margin-top:1px">Nationwide</div></div>
+                  <div style="flex:1;background:#FAFAFA;border-radius:8px;padding:8px"><div style="font-size:8.5px;color:#a1a1aa;font-weight:700">SPEED</div><div style="font-size:11px;font-weight:800;margin-top:1px">Standard</div></div>
+                  <div style="flex:1;background:#FAFAFA;border-radius:8px;padding:8px"><div style="font-size:8.5px;color:#a1a1aa;font-weight:700">SETUP</div><div style="font-size:11px;font-weight:800;margin-top:1px">Automatic</div></div>
+                </div>
+              </div>
+              <div style="border:1px solid #e2e2e6;border-radius:16px;padding:15px;position:relative">
+                <div style="position:absolute;top:-9px;right:14px;background:#1A1A1A;color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:6px">FASTEST</div>
+                <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:15px;font-weight:800">SKT local network</div><div style="width:20px;height:20px;border-radius:50%;border:1.6px solid #c4c4cc"></div></div>
+                <div style="font-size:11.5px;color:#71717a;line-height:1.4;margin-top:4px">Connects directly to Korea's local network. Best in cities.</div>
+                <div style="display:flex;gap:6px;margin-top:11px">
+                  <div style="flex:1;background:#FAFAFA;border-radius:8px;padding:8px"><div style="font-size:8.5px;color:#a1a1aa;font-weight:700">COVERAGE</div><div style="font-size:11px;font-weight:800;margin-top:1px">Korea-wide</div></div>
+                  <div style="flex:1;background:#FAFAFA;border-radius:8px;padding:8px"><div style="font-size:8.5px;color:#a1a1aa;font-weight:700">SPEED</div><div style="font-size:11px;font-weight:800;margin-top:1px">Fastest</div></div>
+                  <div style="flex:1;background:#FAFAFA;border-radius:8px;padding:8px"><div style="font-size:8.5px;color:#a1a1aa;font-weight:700">BEST FOR</div><div style="font-size:11px;font-weight:800;margin-top:1px">Heavy use</div></div>
+                </div>
+              </div>
+            </div>
+            <div style="padding:0 18px 16px"><div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Continue to sign in</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S5 · SIGN IN ============ -->
+    <sc-if value="{{ isS5 }}" hint-placeholder-val="{{ true }}">
+    <section style="max-width:760px;margin:0 auto">
+      <div style="margin-bottom:22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S5 · Sign in / Sign up <span style="font-size:13px;font-weight:700;color:#E4002B;margin-left:8px;font-family:ui-monospace,Menlo,monospace">STEP 4 / 5</span></div>
+        <div style="font-size:14px;color:#52525b;line-height:1.5;margin-top:5px">Account creation = L.POINT global membership (key KPI). Social-first, minimal friction, right before payment.</div>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+          <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+            <div style="display:flex;gap:5px;padding:14px 18px 4px"><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#e6e6e9"></div></div>
+            <div style="font-size:10px;color:#a1a1aa;font-weight:700;padding:0 18px">Step 4 of 5 · Account</div>
+            <div style="padding:16px 18px 0;flex:1;display:flex;flex-direction:column">
+              <div style="font-size:21px;font-weight:800;line-height:1.15;letter-spacing:-0.01em">Create your account</div>
+              <div style="display:flex;flex-direction:column;gap:9px;margin-top:16px">
+                <div style="border:1.5px solid #1A1A1A;border-radius:11px;padding:13px;text-align:center;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:9px"><div style="width:16px;height:16px;border-radius:50%;background:#ededf0"></div>Continue with Google</div>
+                <div style="background:#1A1A1A;color:#fff;border-radius:11px;padding:13px;text-align:center;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:9px"><div style="width:16px;height:16px;border-radius:50%;background:#4b4b50"></div>Continue with Apple</div>
+                <div style="border:1px solid #e2e2e6;border-radius:11px;padding:13px;text-align:center;font-size:13px;font-weight:700;color:#52525b">Continue with email</div>
+              </div>
+              <div style="margin-top:15px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:10.5px;color:#52525b;line-height:1.35"><div style="width:15px;height:15px;border-radius:4px;border:1.6px solid #E4002B;background:#E4002B;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 auto;margin-top:1px">✓</div>I agree to the Terms &amp; Privacy Policy</div>
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:10.5px;color:#71717a;line-height:1.35"><div style="width:15px;height:15px;border-radius:4px;border:1.6px solid #c4c4cc;flex:0 0 auto;margin-top:1px"></div>Push notifications for arrival guide &amp; perks</div>
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:10.5px;color:#71717a;line-height:1.35"><div style="width:15px;height:15px;border-radius:4px;border:1.6px solid #c4c4cc;flex:0 0 auto;margin-top:1px"></div>Marketing offers (optional)</div>
+              </div>
+            </div>
+            <div style="padding:0 18px 16px">
+              <div style="background:#FBF3F5;border:1px solid #f3d4db;border-radius:11px;padding:11px;font-size:10.5px;color:#7a1326;line-height:1.4;font-weight:600">Creating an account also sets up your L.POINT membership for travel perks.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S6 · PAY & RECEIVE (eSIM / USIM / error) ============ -->
+    <sc-if value="{{ isS6 }}" hint-placeholder-val="{{ true }}">
+    <section>
+      <div style="max-width:1080px;margin:0 auto 22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S6 · Pay &amp; receive<span style="font-size:13px;font-weight:700;color:#E4002B;margin-left:12px;font-family:ui-monospace,Menlo,monospace">STEP 5 / 5 · eSIM → QR · USIM → DELIVERY · + ERROR</span></div>
+        <div style="font-size:14px;color:#52525b;max-width:720px;line-height:1.5;margin-top:5px">Same checkout, two receive paths driven by S2. Order summary carries every earlier choice. Left = eSIM (instant QR). Middle = USIM (pickup or delivery). Right = payment-failed state.</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:34px;justify-content:center">
+
+        <!-- eSIM pay & QR -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B;margin-bottom:12px">eSIM PATH · PAY → QR</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px 0"><div style="font-size:18px;color:#52525b">‹</div><div style="font-size:16px;font-weight:800">Pay &amp; receive</div></div>
+              <div style="display:flex;gap:5px;padding:12px 18px 4px"><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div></div>
+              <div style="font-size:10px;color:#a1a1aa;font-weight:700;padding:0 18px">Step 5 of 5 · Pay</div>
+              <div style="padding:14px 18px 0;flex:1;overflow:hidden">
+                <div style="background:#FAFAFA;border:1px solid #eee;border-radius:13px;padding:12px">
+                  <div style="font-size:10px;font-weight:800;color:#a1a1aa;letter-spacing:0.03em">YOUR ORDER</div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:7px"><span style="color:#52525b">eSIM</span><span style="font-weight:800">Daily</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:5px"><span style="color:#52525b">5GB/day · 3 days</span><span style="color:#a1a1aa">data</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:5px"><span style="color:#52525b">Roaming network</span><span style="color:#a1a1aa">auto</span></div>
+                </div>
+                <div style="font-size:11px;font-weight:800;color:#52525b;margin-top:13px">Payment</div>
+                <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px">
+                  <div style="border:2px solid #E4002B;border-radius:10px;padding:11px;display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:800"><div style="width:16px;height:16px;border-radius:50%;border:5px solid #E4002B"></div>International card</div>
+                  <div style="border:1px solid #e2e2e6;border-radius:10px;padding:11px;display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;color:#3f3f46"><div style="width:16px;height:16px;border-radius:50%;border:1.6px solid #c4c4cc"></div>Alipay+</div>
+                  <div style="border:1px solid #e2e2e6;border-radius:10px;padding:11px;display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;color:#3f3f46"><div style="width:16px;height:16px;border-radius:50%;border:1.6px solid #c4c4cc"></div>WeChat Pay</div>
+                </div>
+              </div>
+              <div style="padding:0 18px 16px;border-top:1px solid #efefef;padding-top:12px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px"><div style="font-size:13px;color:#71717a;font-weight:700">Total</div><div style="font-size:20px;font-weight:800">₩—</div></div>
+                <div style="font-size:10px;color:#71717a;text-align:right;margin-bottom:9px;display:flex;align-items:center;justify-content:flex-end;gap:5px"><div style="width:11px;height:11px;border:1.4px solid #16a34a;border-radius:3px"></div>Secure payment · eSIM QR delivered instantly</div>
+                <div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Pay &amp; get eSIM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USIM pay & receive -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B;margin-bottom:12px">USIM PATH · PAY → RECEIVE</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px 0"><div style="font-size:18px;color:#52525b">‹</div><div style="font-size:16px;font-weight:800">Pay &amp; receive</div></div>
+              <div style="display:flex;gap:5px;padding:12px 18px 4px"><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div></div>
+              <div style="font-size:10px;color:#a1a1aa;font-weight:700;padding:0 18px">Step 5 of 5 · Pay &amp; receive</div>
+              <div style="padding:14px 18px 0;flex:1;overflow:hidden">
+                <div style="background:#FAFAFA;border:1px solid #eee;border-radius:13px;padding:12px">
+                  <div style="font-size:10px;font-weight:800;color:#a1a1aa;letter-spacing:0.03em">YOUR ORDER</div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:7px"><span style="color:#52525b">USIM</span><span style="font-weight:800">Volume</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:5px"><span style="color:#52525b">50GB · 30 days</span><span style="color:#a1a1aa">data</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:5px"><span style="color:#52525b">SKT local network</span><span style="color:#a1a1aa">fastest</span></div>
+                </div>
+                <div style="font-size:11px;font-weight:800;color:#52525b;margin-top:13px">How to receive your USIM</div>
+                <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px">
+                  <div style="border:2px solid #E4002B;border-radius:11px;padding:11px;display:flex;gap:10px;align-items:flex-start"><div style="width:16px;height:16px;border-radius:50%;border:5px solid #E4002B;flex:0 0 auto;margin-top:1px"></div><div><div style="font-size:12.5px;font-weight:800">Airport pickup</div><div style="font-size:10.5px;color:#71717a;line-height:1.35;margin-top:1px">Incheon T1 / T2 counter · open 24h. Show your order QR.</div></div></div>
+                  <div style="border:1px solid #e2e2e6;border-radius:11px;padding:11px;display:flex;gap:10px;align-items:flex-start"><div style="width:16px;height:16px;border-radius:50%;border:1.6px solid #c4c4cc;flex:0 0 auto;margin-top:1px"></div><div><div style="font-size:12.5px;font-weight:800">Delivery to hotel</div><div style="font-size:10.5px;color:#71717a;line-height:1.35;margin-top:1px">Courier to your Korea address · 1–2 days.</div></div></div>
+                </div>
+              </div>
+              <div style="padding:0 18px 16px;border-top:1px solid #efefef;padding-top:12px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px"><div style="font-size:13px;color:#71717a;font-weight:700">Total</div><div style="font-size:20px;font-weight:800">₩—</div></div>
+                <div style="font-size:10px;color:#71717a;text-align:right;margin-bottom:9px;display:flex;align-items:center;justify-content:flex-end;gap:5px"><div style="width:11px;height:11px;border:1.4px solid #16a34a;border-radius:3px"></div>Secure payment</div>
+                <div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Pay &amp; reserve pickup</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- error -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B;margin-bottom:12px">ERROR · PAYMENT FAILED</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px 0"><div style="font-size:18px;color:#52525b">‹</div><div style="font-size:16px;font-weight:800">Pay &amp; receive</div></div>
+              <div style="display:flex;gap:5px;padding:12px 18px 4px"><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div><div style="flex:1;height:5px;border-radius:3px;background:#E4002B"></div></div>
+              <div style="padding:18px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+                <div style="width:56px;height:56px;border-radius:50%;border:2.5px solid #E4002B;color:#E4002B;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:300">!</div>
+                <div style="font-size:18px;font-weight:800;margin-top:16px">Payment didn't go through</div>
+                <div style="font-size:12.5px;color:#71717a;line-height:1.45;margin-top:8px">Your card was declined. No charge was made. Try another method or check with your bank.</div>
+                <div style="width:100%;margin-top:20px;background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Try again</div>
+                <div style="width:100%;margin-top:9px;border:1.5px solid #1A1A1A;text-align:center;padding:13px;border-radius:13px;font-weight:800;font-size:13px">Change payment method</div>
+                <div style="font-size:11px;color:#71717a;margin-top:14px;text-decoration:underline">Need help? Contact support</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S7 · CONFIRMATION (eSIM / USIM) ============ -->
+    <sc-if value="{{ isS7 }}" hint-placeholder-val="{{ true }}">
+    <section>
+      <div style="max-width:1080px;margin:0 auto 22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S7 · Confirmation<span style="font-size:13px;font-weight:700;color:#E4002B;margin-left:12px;font-family:ui-monospace,Menlo,monospace">eSIM ISSUED · USIM RESERVED</span></div>
+        <div style="font-size:14px;color:#52525b;max-width:720px;line-height:1.5;margin-top:5px">Confirmation adapts to the SIM branch. eSIM shows the QR + install. USIM confirms the pickup reservation with an order code. Both lead into activation when in Korea.</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:40px;justify-content:center">
+
+        <!-- eSIM confirmation -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B;margin-bottom:12px">eSIM · QR ISSUED</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="padding:16px 18px 0;flex:1;display:flex;flex-direction:column;align-items:center;text-align:center">
+                <div style="width:50px;height:50px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800">✓</div>
+                <div style="font-size:19px;font-weight:800;margin-top:13px">You're all set</div>
+                <div style="font-size:12px;color:#71717a;margin-top:5px;line-height:1.4">eSIM · Daily 5GB/day · 3 days · Roaming</div>
+                <div style="margin-top:16px;border:1px solid #ededf0;border-radius:16px;padding:16px;width:100%;box-shadow:0 6px 16px rgba(0,0,0,0.05)">
+                  <div style="width:124px;height:124px;margin:0 auto;background:repeating-conic-gradient(#1A1A1A 0deg 6deg,#fff 6deg 12deg);border-radius:8px;border:1px solid #e2e2e6"></div>
+                  <div style="font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#a1a1aa;margin-top:9px">eSIM QR · scan to install</div>
+                </div>
+                <div style="margin-top:13px;font-size:11px;color:#71717a;background:#FAFAFA;border:1px solid #eee;border-radius:9px;padding:9px 12px;line-height:1.4">Activate when you arrive in Korea.</div>
+              </div>
+              <div style="padding:14px 18px 16px">
+                <div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">Install now</div>
+                <div style="text-align:center;font-size:12px;color:#52525b;font-weight:700;margin-top:11px;text-decoration:underline">Install later (email sent)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USIM confirmation -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B;margin-bottom:12px">USIM · PICKUP RESERVED</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="padding:16px 18px 0;flex:1;display:flex;flex-direction:column;align-items:center;text-align:center">
+                <div style="width:50px;height:50px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800">✓</div>
+                <div style="font-size:19px;font-weight:800;margin-top:13px">Pickup reserved</div>
+                <div style="font-size:12px;color:#71717a;margin-top:5px;line-height:1.4">USIM · Volume 50GB · 30 days · SKT local</div>
+                <div style="margin-top:16px;border:1px solid #ededf0;border-radius:16px;padding:15px;width:100%;box-shadow:0 6px 16px rgba(0,0,0,0.05);text-align:left">
+                  <div style="font-size:9px;font-weight:800;color:#a1a1aa;letter-spacing:0.05em">PICKUP CODE</div>
+                  <div style="font-family:ui-monospace,Menlo,monospace;font-size:24px;font-weight:800;letter-spacing:0.08em;margin-top:3px">LR-4827</div>
+                  <div style="height:1px;background:#ededf0;margin:11px 0"></div>
+                  <div style="display:flex;gap:9px;align-items:flex-start"><div style="width:14px;height:14px;border-radius:50% 50% 50% 0;background:#E4002B;transform:rotate(-45deg);flex:0 0 auto;margin-top:2px"></div><div><div style="font-size:12px;font-weight:800">Incheon Airport · T1 counter</div><div style="font-size:10.5px;color:#71717a;margin-top:1px">Arrivals 1F · open 24h. Show this code.</div></div></div>
+                </div>
+                <div style="margin-top:13px;font-size:11px;color:#71717a;background:#FAFAFA;border:1px solid #eee;border-radius:9px;padding:9px 12px;line-height:1.4">Activate when you arrive in Korea.</div>
+              </div>
+              <div style="padding:14px 18px 16px">
+                <div style="background:#E4002B;color:#fff;text-align:center;padding:14px;border-radius:13px;font-weight:800;font-size:14px">View pickup details</div>
+                <div style="text-align:center;font-size:12px;color:#52525b;font-weight:700;margin-top:11px;text-decoration:underline">Add code to Wallet</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S8 · ACTIVATION GUIDE ============ -->
+    <sc-if value="{{ isS8 }}" hint-placeholder-val="{{ true }}">
+    <section style="max-width:760px;margin:0 auto">
+      <div style="margin-bottom:22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S8 · Activation guide</div>
+        <div style="font-size:14px;color:#52525b;line-height:1.5;margin-top:5px">Self-serve activation for non-technical users. Device toggle, 3 steps (scan → install → roaming ON), per-step progress, Need help.</div>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+          <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 16px 0"><div style="font-size:18px;color:#52525b">‹</div><div style="font-size:16px;font-weight:800">Set up your line</div></div>
+            <div style="display:flex;gap:6px;padding:14px 18px 4px">
+              <div style="flex:1;text-align:center;background:#1A1A1A;color:#fff;border-radius:9px;padding:8px;font-size:12px;font-weight:800">iPhone</div>
+              <div style="flex:1;text-align:center;border:1px solid #e2e2e6;color:#71717a;border-radius:9px;padding:8px;font-size:12px;font-weight:700">Android</div>
+            </div>
+            <div style="padding:14px 18px 0;flex:1;overflow:hidden">
+              <div style="display:flex;gap:11px;margin-bottom:14px">
+                <div style="display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><div style="width:26px;height:26px;border-radius:50%;background:#E4002B;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center">1</div><div style="width:2px;flex:1;background:#E4002B;margin:3px 0"></div></div>
+                <div style="padding-top:2px"><div style="font-size:13px;font-weight:800">Scan QR code</div><div style="font-size:11px;color:#71717a;margin-top:2px;line-height:1.4">Open Camera and scan the eSIM QR from your confirmation. (USIM: insert the card.)</div><div style="margin-top:8px;display:flex;gap:6px"><div style="background:#E4002B;color:#fff;font-size:11px;font-weight:800;padding:7px 13px;border-radius:8px">Scan QR</div><div style="border:1px solid #d4d4d8;color:#52525b;font-size:11px;font-weight:700;padding:7px 13px;border-radius:8px">Manual setup</div></div></div>
+              </div>
+              <div style="display:flex;gap:11px;margin-bottom:14px">
+                <div style="display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><div style="width:26px;height:26px;border-radius:50%;border:2px solid #c4c4cc;color:#a1a1aa;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center">2</div><div style="width:2px;flex:1;background:#e6e6e9;margin:3px 0"></div></div>
+                <div style="padding-top:2px"><div style="font-size:13px;font-weight:800;color:#71717a">Install plan</div><div style="font-size:11px;color:#a1a1aa;margin-top:2px;line-height:1.4">Tap "Add eSIM" and follow the prompts.</div></div>
+              </div>
+              <div style="display:flex;gap:11px">
+                <div style="display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><div style="width:26px;height:26px;border-radius:50%;border:2px solid #c4c4cc;color:#a1a1aa;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center">3</div></div>
+                <div style="padding-top:2px"><div style="font-size:13px;font-weight:800;color:#71717a">Turn on data roaming</div><div style="font-size:11px;color:#a1a1aa;margin-top:2px;line-height:1.4">Enable roaming for the LOTTE ROAMING line.</div></div>
+              </div>
+            </div>
+            <div style="padding:0 18px 16px;border-top:1px solid #efefef;padding-top:12px;display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:11px;color:#52525b;font-weight:700;text-decoration:underline">Need help?</div>
+              <div style="font-size:10px;color:#71717a;display:flex;gap:6px;align-items:center"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN · 中 · 日</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S9 · ACTIVE HOME (4 variations) ============ -->
+    <sc-if value="{{ isS9 }}" hint-placeholder-val="{{ true }}">
+    <section>
+      <div style="max-width:1080px;margin:0 auto 22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S9 · Active home / Companion<span style="font-size:13px;font-weight:700;color:#E4002B;margin-left:12px;font-family:ui-monospace,Menlo,monospace">4 DIRECTIONS</span></div>
+        <div style="font-size:14px;color:#52525b;max-width:680px;line-height:1.5;margin-top:5px">"Data is on + I have a travel companion" in one screen. Each direction balances the data gauge against the companion cards differently.</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:30px;justify-content:center">
+
+        <!-- A · Ring-first -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">A · RING-FIRST</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">Data ring hero, companion cards stacked beneath.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="padding:6px 18px 0;display:flex;flex-direction:column;align-items:center">
+                <div style="width:150px;height:150px;border-radius:50%;background:conic-gradient(#E4002B 0deg 220deg,#ededf0 220deg 360deg);display:flex;align-items:center;justify-content:center;margin-top:6px"><div style="width:118px;height:118px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:26px;font-weight:800;letter-spacing:-0.02em">7.4GB</div><div style="font-size:11px;color:#71717a;font-weight:700">left · 3 days</div></div></div>
+                <div style="margin-top:13px;background:#E4002B;color:#fff;padding:11px 26px;border-radius:11px;font-size:13px;font-weight:800">Top up</div>
+              </div>
+              <div style="padding:16px 18px 0;flex:1;display:flex;flex-direction:column;gap:9px;overflow:hidden">
+                <div style="font-size:11px;font-weight:800;color:#52525b;text-transform:uppercase;letter-spacing:0.03em">Your companion</div>
+                <div style="display:flex;gap:10px;align-items:center;border:1px solid #ededf0;border-radius:12px;padding:11px"><div style="width:34px;height:34px;border-radius:8px;background:#FBE3E8;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#E4002B;font-weight:800">%</div><div><div style="font-size:12.5px;font-weight:800">Welcome offer</div><div style="font-size:10.5px;color:#71717a">Duty-free 10% on arrival</div></div></div>
+                <div style="display:flex;gap:10px;align-items:center;border:1px solid #ededf0;border-radius:12px;padding:11px"><div style="width:34px;height:34px;border-radius:8px;background:repeating-linear-gradient(45deg,#e6e6e9,#e6e6e9 6px,#f2f2f4 6px,#f2f2f4 12px);flex:0 0 auto"></div><div><div style="font-size:12.5px;font-weight:800">Near you</div><div style="font-size:10.5px;color:#71717a">Myeongdong · 3 highlights</div></div></div>
+                <div style="display:flex;gap:10px;align-items:center;border:1px solid #ededf0;border-radius:12px;padding:11px"><div style="width:34px;height:34px;border-radius:8px;background:#ededf0;flex:0 0 auto"></div><div><div style="font-size:12.5px;font-weight:800">Duty-free pickup</div><div style="font-size:10.5px;color:#71717a">Reminder before you fly</div></div></div>
+              </div>
+              <div style="display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #efefef">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- B · Companion-led (recommended) -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">B · COMPANION-LED <span style="background:#E4002B;color:#fff;border-radius:5px;padding:1px 6px;margin-left:4px">PICK</span></div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">Compact data bar; perks &amp; recommendations dominate.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="padding:12px 18px 0">
+                <div style="font-size:17px;font-weight:800;letter-spacing:-0.01em">Welcome to Seoul 👋</div>
+                <div style="background:#1A1A1A;border-radius:14px;padding:13px;margin-top:11px;display:flex;align-items:center;justify-content:space-between">
+                  <div><div style="color:#fff;font-size:17px;font-weight:800">7.4GB <span style="font-size:11px;color:#bdbdc2;font-weight:600">left · 3 days</span></div><div style="height:5px;width:150px;border-radius:3px;background:#3a3a3e;margin-top:7px"><div style="height:5px;width:95px;border-radius:3px;background:#E4002B"></div></div></div>
+                  <div style="background:#E4002B;color:#fff;font-size:11px;font-weight:800;padding:8px 12px;border-radius:9px">Top up</div>
+                </div>
+              </div>
+              <div style="padding:14px 18px 0;flex:1;display:flex;flex-direction:column;gap:10px;overflow:hidden">
+                <div style="border:1px solid #ededf0;border-radius:14px;overflow:hidden">
+                  <div style="height:74px;background:repeating-linear-gradient(45deg,#e6e6e9,#e6e6e9 8px,#f1f1f3 8px,#f1f1f3 16px);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace;font-size:9px;color:#a0a0a5;position:relative"><div style="position:absolute;top:9px;left:11px;background:#E4002B;color:#fff;font-size:9px;font-weight:800;padding:3px 7px;border-radius:6px">WELCOME OFFER</div>arrival perk</div>
+                  <div style="padding:11px"><div style="font-size:13px;font-weight:800">10% off duty-free today</div><div style="font-size:11px;color:#71717a;margin-top:2px">Tap to claim before you leave the airport</div></div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;border:1px solid #ededf0;border-radius:12px;padding:11px"><div style="width:34px;height:34px;border-radius:8px;background:repeating-linear-gradient(45deg,#e6e6e9,#e6e6e9 6px,#f2f2f4 6px,#f2f2f4 12px);flex:0 0 auto"></div><div style="flex:1"><div style="font-size:12.5px;font-weight:800">Near you · Myeongdong</div><div style="font-size:10.5px;color:#71717a">3 highlights along your route</div></div><div style="color:#c4c4cc">›</div></div>
+                <div style="display:flex;gap:10px;align-items:center;border:1px solid #ededf0;border-radius:12px;padding:11px"><div style="width:34px;height:34px;border-radius:8px;background:#ededf0;flex:0 0 auto"></div><div style="flex:1"><div style="font-size:12.5px;font-weight:800">Duty-free pickup</div><div style="font-size:10.5px;color:#71717a">We'll remind you before departure</div></div><div style="color:#c4c4cc">›</div></div>
+              </div>
+              <div style="display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #efefef">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- C · Near-you map-led -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">C · MAP-LED</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">"Near you" map hero; data summary tucked in a top bar.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 4px;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="margin:0 16px;background:#FAFAFA;border:1px solid #eee;border-radius:11px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px;font-weight:800">7.4GB <span style="font-size:10px;color:#71717a;font-weight:600">· 3 days</span></div><div style="font-size:10px;font-weight:800;color:#E4002B;border:1px solid #f3c6cf;border-radius:7px;padding:4px 9px">Top up</div></div>
+              <div style="position:relative;flex:1;margin-top:10px;background:repeating-linear-gradient(45deg,#ededf0,#ededf0 11px,#f5f5f7 11px,#f5f5f7 22px);overflow:hidden">
+                <div style="position:absolute;top:50px;left:90px;width:14px;height:14px;border-radius:50% 50% 50% 0;background:#E4002B;transform:rotate(-45deg)"></div>
+                <div style="position:absolute;top:120px;left:180px;width:14px;height:14px;border-radius:50% 50% 50% 0;background:#E4002B;transform:rotate(-45deg)"></div>
+                <div style="position:absolute;top:165px;left:70px;width:14px;height:14px;border-radius:50% 50% 50% 0;background:#1A1A1A;transform:rotate(-45deg)"></div>
+                <div style="position:absolute;top:14px;left:14px;font-family:ui-monospace,Menlo,monospace;font-size:9px;color:#9a9a9f">map · near you</div>
+                <div style="position:absolute;left:14px;right:14px;bottom:14px;background:#fff;border:1px solid #ededf0;border-radius:13px;padding:12px;box-shadow:0 8px 20px rgba(0,0,0,0.08)">
+                  <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:9px;font-weight:800;color:#E4002B;letter-spacing:0.04em">NEAR YOU · 350M</div><div style="font-size:9px;color:#a1a1aa">Lotte World Tower</div></div>
+                  <div style="font-size:13.5px;font-weight:800;margin-top:5px">Observation deck + a welcome perk</div>
+                  <div style="font-size:11px;color:#71717a;margin-top:2px">Tap for nearby highlights</div>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #efefef">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- D · Dashboard -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">D · DASHBOARD</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">Stat tiles + horizontal perk carousel. Scan-friendly.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="padding:12px 18px 0"><div style="font-size:17px;font-weight:800">Your trip</div></div>
+              <div style="display:flex;gap:9px;padding:12px 18px 0">
+                <div style="flex:1;background:#1A1A1A;border-radius:13px;padding:13px"><div style="color:#bdbdc2;font-size:10px;font-weight:700">DATA LEFT</div><div style="color:#fff;font-size:22px;font-weight:800;margin-top:4px">7.4<span style="font-size:12px">GB</span></div></div>
+                <div style="flex:1;background:#FAFAFA;border:1px solid #eee;border-radius:13px;padding:13px"><div style="color:#71717a;font-size:10px;font-weight:700">TRIP LEFT</div><div style="font-size:22px;font-weight:800;margin-top:4px">3<span style="font-size:12px">days</span></div></div>
+              </div>
+              <div style="padding:10px 18px 0"><div style="background:#E4002B;color:#fff;text-align:center;padding:11px;border-radius:11px;font-size:13px;font-weight:800">Top up</div></div>
+              <div style="padding:16px 0 0 18px;flex:1;overflow:hidden">
+                <div style="font-size:11px;font-weight:800;color:#52525b;text-transform:uppercase;letter-spacing:0.03em">Perks near you</div>
+                <div style="display:flex;gap:10px;margin-top:10px;overflow:hidden">
+                  <div style="flex:0 0 140px;border:1px solid #ededf0;border-radius:13px;overflow:hidden"><div style="height:70px;background:repeating-linear-gradient(45deg,#e6e6e9,#e6e6e9 7px,#f1f1f3 7px,#f1f1f3 14px)"></div><div style="padding:10px"><div style="font-size:12px;font-weight:800">Welcome offer</div><div style="font-size:10px;color:#71717a;margin-top:1px">Duty-free 10%</div></div></div>
+                  <div style="flex:0 0 140px;border:1px solid #ededf0;border-radius:13px;overflow:hidden"><div style="height:70px;background:repeating-linear-gradient(45deg,#e6e6e9,#e6e6e9 7px,#f1f1f3 7px,#f1f1f3 14px)"></div><div style="padding:10px"><div style="font-size:12px;font-weight:800">Near you</div><div style="font-size:10px;color:#71717a;margin-top:1px">Myeongdong</div></div></div>
+                  <div style="flex:0 0 60px;border:1px dashed #d4d4d8;border-radius:13px"></div>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #efefef">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ S10 · LIFECYCLE PUSH (4 variations) ============ -->
+    <sc-if value="{{ isS10 }}" hint-placeholder-val="{{ true }}">
+    <section>
+      <div style="max-width:1080px;margin:0 auto 22px">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em">S10 · Lifecycle notifications<span style="font-size:13px;font-weight:700;color:#E4002B;margin-left:12px;font-family:ui-monospace,Menlo,monospace">4 DIRECTIONS</span></div>
+        <div style="font-size:14px;color:#52525b;max-width:700px;line-height:1.5;margin-top:5px">The core mechanism: the always-on line lets us push the right message at the right moment — arrival welcome, in-stay nearby, pre-departure last call. Shown as lockscreen, in-app banner, journey timeline, and a rich expanded notification.</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:30px;justify-content:center">
+
+        <!-- A · iOS lockscreen stack -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">A · LOCKSCREEN STACK</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">All three as iOS lockscreen notifications.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:repeating-linear-gradient(45deg,#2a2a2e,#2a2a2e 12px,#313135 12px,#313135 24px);overflow:hidden;display:flex;flex-direction:column;padding:0 12px">
+              <div style="text-align:center;color:#fff;padding-top:34px"><div style="font-size:13px;font-weight:600;opacity:0.9">Monday, June 15</div><div style="font-size:56px;font-weight:700;letter-spacing:-0.02em;line-height:1.05">9:41</div></div>
+              <div style="display:flex;flex-direction:column;gap:9px;margin-top:26px">
+                <div style="background:rgba(255,255,255,0.92);border-radius:16px;padding:12px;display:flex;gap:10px"><div style="width:30px;height:30px;border-radius:7px;background:#E4002B;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">L</div><div><div style="display:flex;justify-content:space-between"><div style="font-size:11px;font-weight:800">LOTTE ROAMING</div><div style="font-size:9px;color:#8a8a8f">now</div></div><div style="font-size:11.5px;font-weight:700;margin-top:2px">Welcome to Korea!</div><div style="font-size:11px;color:#52525b;line-height:1.35;margin-top:1px">Your eSIM is now active. Here's your arrival guide + a welcome perk.</div></div></div>
+                <div style="background:rgba(255,255,255,0.92);border-radius:16px;padding:12px;display:flex;gap:10px"><div style="width:30px;height:30px;border-radius:7px;background:#E4002B;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">L</div><div><div style="display:flex;justify-content:space-between"><div style="font-size:11px;font-weight:800">LOTTE ROAMING</div><div style="font-size:9px;color:#8a8a8f">2h ago</div></div><div style="font-size:11.5px;font-weight:700;margin-top:2px">You're near Lotte World Tower</div><div style="font-size:11px;color:#52525b;line-height:1.35;margin-top:1px">Tap for nearby highlights and a perk.</div></div></div>
+                <div style="background:rgba(255,255,255,0.78);border-radius:16px;padding:12px;display:flex;gap:10px"><div style="width:30px;height:30px;border-radius:7px;background:#E4002B;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">L</div><div><div style="display:flex;justify-content:space-between"><div style="font-size:11px;font-weight:800">LOTTE ROAMING</div><div style="font-size:9px;color:#8a8a8f">1d ago</div></div><div style="font-size:11.5px;font-weight:700;margin-top:2px">Heading home soon?</div><div style="font-size:11px;color:#52525b;line-height:1.35;margin-top:1px">Don't forget your duty-free pickup before you fly.</div></div></div>
+              </div>
+              <div style="margin-top:auto;display:flex;justify-content:center;padding-bottom:12px"><div style="width:110px;height:5px;border-radius:3px;background:rgba(255,255,255,0.6)"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- B · In-app banner stack -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">B · IN-APP BANNERS</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">Same three as in-app toast banners over the home.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#F4F4F5;overflow:hidden;display:flex;flex-direction:column;position:relative">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46;background:#fff"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="padding:10px 16px 0;opacity:0.45"><div style="font-size:15px;font-weight:800">7.4GB left · 3 days</div><div style="height:90px;background:#e6e6e9;border-radius:12px;margin-top:8px"></div></div>
+              <div style="position:absolute;left:12px;right:12px;top:90px;display:flex;flex-direction:column;gap:10px">
+                <div style="background:#fff;border-radius:14px;padding:12px;box-shadow:0 8px 22px rgba(0,0,0,0.12);display:flex;gap:10px;border-left:3px solid #E4002B"><div style="width:30px;height:30px;border-radius:7px;background:#FBE3E8;color:#E4002B;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">✦</div><div><div style="font-size:12px;font-weight:800">Welcome to Korea!</div><div style="font-size:11px;color:#52525b;line-height:1.35;margin-top:2px">Your eSIM is active. Here's your arrival guide + a welcome perk.</div><div style="font-size:11px;font-weight:800;color:#E4002B;margin-top:7px">Open arrival guide →</div></div></div>
+                <div style="background:#fff;border-radius:14px;padding:12px;box-shadow:0 8px 22px rgba(0,0,0,0.10);display:flex;gap:10px;border-left:3px solid #E4002B"><div style="width:30px;height:30px;border-radius:7px;background:#ededf0;flex:0 0 auto"></div><div><div style="font-size:12px;font-weight:800">You're near Lotte World Tower</div><div style="font-size:11px;color:#52525b;line-height:1.35;margin-top:2px">Tap for nearby highlights and a perk.</div><div style="font-size:11px;font-weight:800;color:#E4002B;margin-top:7px">See what's near →</div></div></div>
+                <div style="background:#fff;border-radius:14px;padding:12px;box-shadow:0 8px 22px rgba(0,0,0,0.08);display:flex;gap:10px;border-left:3px solid #E4002B"><div style="width:30px;height:30px;border-radius:7px;background:#ededf0;flex:0 0 auto"></div><div><div style="font-size:12px;font-weight:800">Heading home soon?</div><div style="font-size:11px;color:#52525b;line-height:1.35;margin-top:2px">Don't forget your duty-free pickup before you fly.</div><div style="font-size:11px;font-weight:800;color:#E4002B;margin-top:7px">View pickup →</div></div></div>
+              </div>
+              <div style="margin-top:auto;display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #e2e2e6;background:#fff">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- C · Journey timeline -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">C · JOURNEY TIMELINE</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">Maps the 3 messages onto arrival → stay → departure.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0;font-size:11px;font-weight:700"><span>9:41</span><div style="display:inline-flex;align-items:center;gap:5px;border:1px solid #d4d4d8;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;color:#3f3f46"><div style="width:11px;height:11px;border:1.4px solid #71717a;border-radius:50%"></div>EN<span style="color:#a1a1aa">▾</span></div></div>
+              <div style="padding:14px 18px 4px"><div style="font-size:18px;font-weight:800">Your trip, guided</div><div style="font-size:11px;color:#71717a;margin-top:3px">We message you at the right moment.</div></div>
+              <div style="padding:14px 18px 0;flex:1;overflow:hidden">
+                <div style="display:flex;gap:12px;margin-bottom:6px">
+                  <div style="display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><div style="width:14px;height:14px;border-radius:50%;background:#E4002B"></div><div style="width:2px;flex:1;background:#f0d2d8;margin:3px 0"></div></div>
+                  <div style="padding-bottom:14px"><div style="font-size:10px;font-weight:800;color:#E4002B;letter-spacing:0.03em">ARRIVAL · DETECTED</div><div style="background:#FAFAFA;border:1px solid #eee;border-radius:12px;padding:11px;margin-top:6px"><div style="font-size:12.5px;font-weight:800">Welcome to Korea!</div><div style="font-size:11px;color:#71717a;line-height:1.35;margin-top:2px">eSIM active. Arrival guide + welcome perk.</div></div></div>
+                </div>
+                <div style="display:flex;gap:12px;margin-bottom:6px">
+                  <div style="display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><div style="width:14px;height:14px;border-radius:50%;background:#E4002B"></div><div style="width:2px;flex:1;background:#f0d2d8;margin:3px 0"></div></div>
+                  <div style="padding-bottom:14px"><div style="font-size:10px;font-weight:800;color:#E4002B;letter-spacing:0.03em">DURING STAY · NEARBY</div><div style="background:#FAFAFA;border:1px solid #eee;border-radius:12px;padding:11px;margin-top:6px"><div style="font-size:12.5px;font-weight:800">Near Lotte World Tower</div><div style="font-size:11px;color:#71717a;line-height:1.35;margin-top:2px">Tap for highlights and a perk.</div></div></div>
+                </div>
+                <div style="display:flex;gap:12px">
+                  <div style="display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><div style="width:14px;height:14px;border-radius:50%;border:2px solid #E4002B;background:#fff"></div></div>
+                  <div><div style="font-size:10px;font-weight:800;color:#a1a1aa;letter-spacing:0.03em">BEFORE DEPARTURE · LAST CALL</div><div style="border:1px dashed #d4d4d8;border-radius:12px;padding:11px;margin-top:6px"><div style="font-size:12.5px;font-weight:800;color:#52525b">Heading home soon?</div><div style="font-size:11px;color:#a1a1aa;line-height:1.35;margin-top:2px">Don't forget your duty-free pickup.</div></div></div>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-around;padding:8px 4px 12px;border-top:1px solid #efefef">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Home</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Plans</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#E4002B"><div style="width:17px;height:17px;border-radius:5px;background:#E4002B"></div>Perks</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#b4b4bb"><div style="width:17px;height:17px;border-radius:5px;border:1.6px solid #c4c4cc"></div>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- D · Rich expanded notification -->
+        <div style="width:300px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800;color:#E4002B">D · RICH EXPANDED</div>
+          <div style="font-size:12px;color:#52525b;line-height:1.4;margin:3px 0 12px">One expanded notification with image + actions, two collapsed.</div>
+          <div style="width:300px;height:620px;border-radius:38px;background:#111;padding:9px;box-shadow:0 18px 44px rgba(0,0,0,0.16)">
+            <div style="width:100%;height:100%;border-radius:30px;background:repeating-linear-gradient(45deg,#2a2a2e,#2a2a2e 12px,#313135 12px,#313135 24px);overflow:hidden;display:flex;flex-direction:column;padding:0 12px">
+              <div style="text-align:center;color:#fff;padding-top:30px"><div style="font-size:12px;font-weight:600;opacity:0.9">Monday, June 15</div><div style="font-size:44px;font-weight:700;letter-spacing:-0.02em">9:41</div></div>
+              <div style="display:flex;flex-direction:column;gap:9px;margin-top:18px">
+                <div style="background:#fff;border-radius:16px;overflow:hidden">
+                  <div style="display:flex;gap:10px;padding:12px 12px 8px"><div style="width:30px;height:30px;border-radius:7px;background:#E4002B;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">L</div><div style="flex:1"><div style="display:flex;justify-content:space-between"><div style="font-size:11px;font-weight:800">LOTTE ROAMING</div><div style="font-size:9px;color:#8a8a8f">now</div></div><div style="font-size:12px;font-weight:800;margin-top:2px">Welcome to Korea! 🇰🇷</div><div style="font-size:11px;color:#52525b;line-height:1.35;margin-top:1px">Your eSIM is now active. Here's your arrival guide + a welcome perk.</div></div></div>
+                  <div style="height:78px;background:repeating-linear-gradient(45deg,#e6e6e9,#e6e6e9 8px,#f1f1f3 8px,#f1f1f3 16px);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace;font-size:9px;color:#a0a0a5">photo · arrival</div>
+                  <div style="display:flex;border-top:1px solid #ededf0"><div style="flex:1;text-align:center;padding:11px;font-size:11px;font-weight:800;color:#E4002B;border-right:1px solid #ededf0">Arrival guide</div><div style="flex:1;text-align:center;padding:11px;font-size:11px;font-weight:800;color:#1A1A1A">Claim perk</div></div>
+                </div>
+                <div style="background:rgba(255,255,255,0.88);border-radius:14px;padding:11px;display:flex;gap:10px"><div style="width:26px;height:26px;border-radius:7px;background:#E4002B;color:#fff;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">L</div><div><div style="font-size:11px;font-weight:800">You're near Lotte World Tower</div><div style="font-size:10.5px;color:#52525b;margin-top:1px">Tap for nearby highlights and a perk.</div></div></div>
+                <div style="background:rgba(255,255,255,0.72);border-radius:14px;padding:11px;display:flex;gap:10px"><div style="width:26px;height:26px;border-radius:7px;background:#E4002B;color:#fff;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">L</div><div><div style="font-size:11px;font-weight:800">Heading home soon?</div><div style="font-size:10.5px;color:#52525b;margin-top:1px">Don't forget your duty-free pickup.</div></div></div>
+              </div>
+              <div style="margin-top:auto;display:flex;justify-content:center;padding-bottom:12px"><div style="width:110px;height:5px;border-radius:3px;background:rgba(255,255,255,0.6)"></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    </sc-if>
+
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'flow' };
+
+  renderVals() {
+    const active = this.state.tab;
+    const base = 'flex:0 0 auto;border:none;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:9px;white-space:nowrap;transition:all .12s;';
+    const mk = ([id, label]) => ({
+      id,
+      label,
+      onClick: () => this.setState({ tab: id }),
+      btnStyle: id === active
+        ? base + 'background:#1A1A1A;color:#fff;'
+        : base + 'background:transparent;color:#71717a;',
+    });
+    const tabs = [
+      ['flow', 'Flow'],
+      ['s1', 'S1 · Discover'],
+      ['s2', 'S2 · SIM type'],
+      ['s3', 'S3 · Plan'],
+      ['s4', 'S4 · Network'],
+      ['s5', 'S5 · Sign in'],
+      ['s6', 'S6 · Pay & receive'],
+      ['s7', 'S7 · Confirm'],
+      ['s8', 'S8 · Activate'],
+      ['s9', 'S9 · Active'],
+      ['s10', 'S10 · Push'],
+    ].map(mk);
+
+    const flowNodes = [
+      { id: 'S1', title: 'Discover', desc: 'Korea travel data, instantly clear. Companion teaser + start.', tag: 'COMPANION-LED', tagColor: '#E4002B' },
+      { id: 'S2', title: 'SIM type', desc: 'eSIM (instant QR) or USIM (physical card).', tag: 'BRANCH ›', tagColor: '#E4002B' },
+      { id: 'S3', title: 'Plan', desc: 'Daily (refills, low-speed after cap) or Volume (one pool). Configure size.', tag: 'BRANCH ›', tagColor: '#E4002B' },
+      { id: 'S4', title: 'Network', desc: 'Roaming (auto, nationwide) or SKT local (fastest).', tag: 'CONFIGURE', tagColor: '#a1a1aa' },
+      { id: 'S5', title: 'Sign in', desc: 'Social-first. Account = L.POINT membership.', tag: 'KPI', tagColor: '#E4002B' },
+      { id: 'S6', title: 'Pay & receive', desc: 'Intl card / Alipay+ / WeChat. eSIM→QR, USIM→pickup. Error state.', tag: 'FUNNEL', tagColor: '#a1a1aa' },
+      { id: 'S7', title: 'Confirm', desc: 'eSIM QR issued or USIM pickup reserved.', tag: 'FUNNEL', tagColor: '#a1a1aa' },
+      { id: 'S8', title: 'Activation', desc: 'Self-serve: scan → install → roaming ON.', tag: 'SELF-SERVE', tagColor: '#a1a1aa' },
+      { id: 'S9', title: 'Active home', desc: 'Data gauge + Top up + companion cards.', tag: 'COMPANION-LED', tagColor: '#E4002B' },
+      { id: 'S10', title: 'Lifecycle push', desc: 'Arrival · nearby · departure messages.', tag: 'MECHANISM', tagColor: '#E4002B' },
+    ];
+
+    return {
+      tabs,
+      flowNodes,
+      isFlow: active === 'flow',
+      isS1: active === 's1',
+      isS2: active === 's2',
+      isS3: active === 's3',
+      isS4: active === 's4',
+      isS5: active === 's5',
+      isS6: active === 's6',
+      isS7: active === 's7',
+      isS8: active === 's8',
+      isS9: active === 's9',
+      isS10: active === 's10',
+    };
+  }
+}
+</script>
+</body>
+</html>
