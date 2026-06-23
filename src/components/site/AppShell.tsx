@@ -8,7 +8,7 @@ import { cn } from '../../lib/cn'
 
 // Top-level routes keep the footer + bottom tab bar; sub-pages (detail / flows)
 // are focused, so on mobile the footer is hidden and the page owns the bottom.
-const TOP_LEVEL = new Set(['/', '/travel', '/applications'])
+const TOP_LEVEL = new Set(['/', '/roaming', '/plans', '/travel', '/applications'])
 
 // Full responsive web shell: soft-gray feed background with white cards; mobile
 // gets a bottom tab bar, desktop a top nav.

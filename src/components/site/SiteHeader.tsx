@@ -17,7 +17,7 @@ const NAV = [
 
 // Top-level routes show the brand; everything else is a sub-page that, on
 // mobile, turns the header into a back-navigation bar.
-const TOP_LEVEL = new Set(['/', '/travel', '/applications'])
+const TOP_LEVEL = new Set(['/', '/roaming', '/plans', '/travel', '/applications'])
 
 export default function SiteHeader() {
   const UI = useUI()

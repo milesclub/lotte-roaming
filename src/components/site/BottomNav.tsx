@@ -5,7 +5,7 @@ import { useAuth } from '../../store/auth'
 
 // Tab destinations are the only top-level routes; everything else is a sub-page
 // where the bottom nav is hidden (mobile) so the page can stand on its own.
-const TOP_LEVEL = new Set(['/', '/travel', '/applications'])
+const TOP_LEVEL = new Set(['/', '/roaming', '/plans', '/travel', '/applications'])
 
 export default function BottomNav() {
   const UI = useUI()
